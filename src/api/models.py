@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-
-
+from datetime import date
 db = SQLAlchemy()
 
 
@@ -45,10 +43,10 @@ class Players(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     playerName = db.Column(db.String, unique=False, nullable=False)
     position = db.Column(db.String, unique=False, nullable=False)
-    birth_date = db.Column(db.DateTime, nullable=False) # Revisar formato de fecha
+    birth_date = db.Column(db.Date, nullable=False) # Revisar formato de fecha
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('players_to', lazy='select'))
-
+    
 
 class Seasons(db.Model):
     id = db.Column(db.Integer, primary_key=True)
