@@ -49,7 +49,7 @@ class Teams(db.Model):
     name = db.Column(db.String, unique=True, nullable=False)
     full_name = db.Column(db.String, unique=True, nullable=False)
     abbreviation = db.Column(db.String, unique=True, nullable=False)
-
+    
     def __repr__(self):
         return f'<Team: {self.abbreviation} - {self.name} >'
 
@@ -169,3 +169,4 @@ class Stats(db.Model):
                 'turnovers': self.turnovers,
                 'personal_fouls': self.personal_fouls
                 }
+
