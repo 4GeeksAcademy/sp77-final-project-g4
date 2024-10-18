@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fc0e71eb8aff
+Revision ID: b0da06a18dc3
 Revises: 
-Create Date: 2024-10-14 19:37:15.648864
+Create Date: 2024-10-16 19:30:51.199151
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fc0e71eb8aff'
+revision = 'b0da06a18dc3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -74,33 +74,34 @@ def upgrade():
     )
     op.create_table('stats',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('games', sa.String(), nullable=False),
-    sa.Column('assists', sa.String(), nullable=False),
-    sa.Column('points', sa.String(), nullable=False),
-    sa.Column('gamesStarted', sa.String(), nullable=False),
-    sa.Column('minutesPg', sa.String(), nullable=False),
-    sa.Column('fieldGoals', sa.String(), nullable=False),
-    sa.Column('fieldAttempts', sa.String(), nullable=False),
-    sa.Column('fieldPercent', sa.String(), nullable=False),
-    sa.Column('threeFg', sa.String(), nullable=False),
-    sa.Column('threeAttempts', sa.String(), nullable=False),
-    sa.Column('twoFg', sa.String(), nullable=False),
-    sa.Column('twoAttempts', sa.String(), nullable=False),
-    sa.Column('threePercent', sa.String(), nullable=False),
-    sa.Column('effectFgPercent', sa.String(), nullable=False),
-    sa.Column('ft', sa.String(), nullable=False),
-    sa.Column('ftAttempts', sa.String(), nullable=False),
-    sa.Column('ftPercent', sa.String(), nullable=False),
-    sa.Column('offensiveRb', sa.String(), nullable=False),
-    sa.Column('defensiveRb', sa.String(), nullable=False),
-    sa.Column('totalRb', sa.String(), nullable=False),
-    sa.Column('steals', sa.String(), nullable=False),
-    sa.Column('turnovers', sa.String(), nullable=False),
-    sa.Column('blocks', sa.String(), nullable=False),
-    sa.Column('personalFouls', sa.String(), nullable=False),
-    sa.Column('team_id', sa.Integer(), nullable=True),
-    sa.Column('player_id', sa.Integer(), nullable=True),
-    sa.Column('season_id', sa.Integer(), nullable=True),
+    sa.Column('games', sa.String(), nullable=True),
+    sa.Column('assists', sa.String(), nullable=True),
+    sa.Column('points', sa.String(), nullable=True),
+    sa.Column('games_started', sa.String(), nullable=True),
+    sa.Column('minutes_pg', sa.String(), nullable=True),
+    sa.Column('field_goals', sa.String(), nullable=True),
+    sa.Column('field_attempts', sa.String(), nullable=True),
+    sa.Column('field_percent', sa.String(), nullable=True),
+    sa.Column('three_fg', sa.String(), nullable=True),
+    sa.Column('three_attempts', sa.String(), nullable=True),
+    sa.Column('three_percent', sa.String(), nullable=True),
+    sa.Column('two_fg', sa.String(), nullable=True),
+    sa.Column('two_attempts', sa.String(), nullable=True),
+    sa.Column('two_percent', sa.String(), nullable=True),
+    sa.Column('effect_fg_percent', sa.String(), nullable=True),
+    sa.Column('ft', sa.String(), nullable=True),
+    sa.Column('ft_attempts', sa.String(), nullable=True),
+    sa.Column('ft_percent', sa.String(), nullable=True),
+    sa.Column('offensive_rb', sa.String(), nullable=True),
+    sa.Column('defensive_rb', sa.String(), nullable=True),
+    sa.Column('total_rb', sa.String(), nullable=True),
+    sa.Column('steals', sa.String(), nullable=True),
+    sa.Column('blocks', sa.String(), nullable=True),
+    sa.Column('turnovers', sa.String(), nullable=True),
+    sa.Column('personal_fouls', sa.String(), nullable=True),
+    sa.Column('team_id', sa.Integer(), nullable=False),
+    sa.Column('player_id', sa.Integer(), nullable=False),
+    sa.Column('season_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['player_id'], ['players.id'], ),
     sa.ForeignKeyConstraint(['season_id'], ['seasons.id'], ),
     sa.ForeignKeyConstraint(['team_id'], ['teams.id'], ),

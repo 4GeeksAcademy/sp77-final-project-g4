@@ -73,13 +73,14 @@ class Players(db.Model):
     team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('players_to', lazy='select'))
 
     def __repr__(self):
-        return f'<Player: {self.full_name} >'
+        return f'<Player: {self.playerName} >'
 
     def serialize(self):
         return {'id': self.id,
                 'playerName': self.playerName,
                 'position': self.position,
-                'team': self.team_abbreviation}
+                # 'team': self.team_to.serialize()
+                }
 
 
 class Seasons(db.Model):
@@ -105,35 +106,66 @@ class FavoritePlayers(db.Model):
 
 class Stats(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    games = db.Column(db.String, unique=False, nullable=False)
-    assists = db.Column(db.String, unique=False, nullable=False)
-    points = db.Column(db.String, unique=False, nullable=False)
-    gamesStarted = db.Column(db.String, unique=False, nullable=False)
-    minutesPg = db.Column(db.String, unique=False, nullable=False)
-    fieldGoals = db.Column(db.String, unique=False, nullable=False)
-    fieldAttempts = db.Column(db.String, unique=False, nullable=False)
-    fieldPercent = db.Column(db.String, unique=False, nullable=False)
-    threeFg = db.Column(db.String, unique=False, nullable=False)
-    threeAttempts = db.Column(db.String, unique=False, nullable=False)
-    threePercent = db.Column(db.String, unique=False, nullable=False)
-    twoFg = db.Column(db.String, unique=False, nullable=False)
-    twoAttempts = db.Column(db.String, unique=False, nullable=False)
-    threePercent = db.Column(db.String, unique=False, nullable=False)
-    effectFgPercent = db.Column(db.String, unique=False, nullable=False)
-    ft = db.Column(db.String, unique=False, nullable=False)
-    ftAttempts = db.Column(db.String, unique=False, nullable=False)
-    ftPercent = db.Column(db.String, unique=False, nullable=False)
-    offensiveRb = db.Column(db.String, unique=False, nullable=False)
-    defensiveRb = db.Column(db.String, unique=False, nullable=False)
-    totalRb = db.Column(db.String, unique=False, nullable=False)
-    steals = db.Column(db.String, unique=False, nullable=False)
-    blocks = db.Column(db.String, unique=False, nullable=False)
-    turnovers = db.Column(db.String, unique=False, nullable=False)
-    blocks = db.Column(db.String, unique=False, nullable=False)
-    personalFouls = db.Column(db.String, unique=False, nullable=False)
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    games = db.Column(db.String, unique=False, nullable=True)
+    assists = db.Column(db.String, unique=False, nullable=True)
+    points = db.Column(db.String, unique=False, nullable=True)
+    games_started = db.Column(db.String, unique=False, nullable=True)
+    minutes_pg = db.Column(db.String, unique=False, nullable=True)
+    field_goals = db.Column(db.String, unique=False, nullable=True)
+    field_attempts = db.Column(db.String, unique=False, nullable=True)
+    field_percent = db.Column(db.String, unique=False, nullable=True)
+    three_fg = db.Column(db.String, unique=False, nullable=True)
+    three_attempts = db.Column(db.String, unique=False, nullable=True)
+    three_percent = db.Column(db.String, unique=False, nullable=True)
+    two_fg = db.Column(db.String, unique=False, nullable=True)
+    two_attempts = db.Column(db.String, unique=False, nullable=True)
+    two_percent = db.Column(db.String, unique=False, nullable=True)
+    effect_fg_percent = db.Column(db.String, unique=False, nullable=True)
+    ft = db.Column(db.String, unique=False, nullable=True)
+    ft_attempts = db.Column(db.String, unique=False, nullable=True)
+    ft_percent = db.Column(db.String, unique=False, nullable=True)
+    offensive_rb = db.Column(db.String, unique=False, nullable=True)
+    defensive_rb = db.Column(db.String, unique=False, nullable=True)
+    total_rb = db.Column(db.String, unique=False, nullable=True)
+    steals = db.Column(db.String, unique=False, nullable=True)
+    blocks = db.Column(db.String, unique=False, nullable=True)
+    turnovers = db.Column(db.String, unique=False, nullable=True)
+    personal_fouls = db.Column(db.String, unique=False, nullable=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('stats_to', lazy='select'))
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
+    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
     player_to = db.relationship('Players', foreign_keys=[player_id], backref=db.backref('stats_to', lazy='select'))
-    season_id = db.Column(db.Integer, db.ForeignKey('seasons.id'))
+    season_id = db.Column(db.Integer, db.ForeignKey('seasons.id'), nullable=False)
     season_to = db.relationship('Seasons', foreign_keys=[season_id], backref=db.backref('stats_to', lazy='select'))
+
+    def __repr__(self):
+        return f'<Player: {self.player_id} >'
+
+    def serialize(self):
+        return {'id': self.id,
+                'games': self.games,
+                'assists': self.assists,
+                'points': self.points,
+                'games_started': self.games_started,
+                'minutes_pg': self.minutes_pg,
+                'field_goals': self.field_goals,
+                'field_attempts': self.field_attempts,
+                'field_percent': self.field_percent,
+                'three_fg': self.three_fg,
+                'three_attempts': self.three_attempts,
+                'three_percent': self.three_percent,
+                'two_fg': self.two_fg,
+                'two_attempts': self.two_attempts,
+                'two_percent': self.three_percent,
+                'effect_fg_percent': self.effect_fg_percent,
+                'ft': self.ft,
+                'ft_attempts': self.ft_attempts,
+                'ft_percent': self.ft_percent,
+                'offensive_rb': self.offensive_rb,
+                'defensive_rb': self.defensive_rb,
+                'total_rb': self.total_rb,
+                'steals': self.steals,
+                'blocks': self.blocks,
+                'turnovers': self.turnovers,
+                'personal_fouls': self.personal_fouls
+                }

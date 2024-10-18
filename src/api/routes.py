@@ -38,10 +38,9 @@ def teams():
             headers = {'Authorization': api_key}
             response = requests.request("GET", url, headers=headers, data=payload)
             if response.status_code == 200:
-                print('*********')
                 data = response.json()
-                row = Teams(id=data["data"]["id"],
-                                conference=data["data"]["conference"],
+                print(data["data"]["abbreviation"])
+                row = Teams(conference=data["data"]["conference"],
                                 division=data["data"]["division"],
                                 city=data["data"]["city"],
                                 name=data["data"]["name"],
@@ -50,6 +49,14 @@ def teams():
                 db.session.add(row)
                 db.session.commit()
         # Cuando termina el ciclo, vuelvo a hacer el select
+        row = Teams(conference='TOTAL',
+                                division='TOTAL',
+                                city='TOTAL',
+                                name='TOTAL',
+                                full_name='TOTAL',
+                                abbreviation='TOT')
+        db.session.add(row)
+        db.session.commit()
         rows = db.session.execute(db.select(Teams)).scalars()
     # Muestro todos los registros que tengo en la base
     result = [row.serialize() for row in rows]
@@ -80,7 +87,7 @@ def players():
                     id=player["id"],
                     playerName=player["playerName"],
                     position=player["position"],
-                    team_id=player["team"]
+                    # team_id=player["team"]
                     # El campo birth_date ya no se incluye
                 )
 
@@ -91,13 +98,108 @@ def players():
 
             # Cuando termina el ciclo, vuelvo a hacer el select
             rows = db.session.execute(db.select(Players)).scalars()
+            result = [row.serialize() for row in rows]
         else:
             print(f"Error al obtener datos de la API: {response.status_code}")
 
     # Muestro todos los registros que tengo en la base
-    result = [row.serialize() for row in rows]
     response_body['results'] = result
     return response_body, 200
+
+# @api.route('/seasons', methods=['GET'])
+# def seasons():
+#     response_body = {}
+#     url=f'http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024/'
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         data = response.json()
+#         row = Characters(id=data["id"],
+#                          season=data["result"]["properties"]["name"])
+#         db.session.add(row)
+#         db.session.commit()
+#         response_body['results'] = data
+#     return response_body, 200
+
+
+@api.route('/stats', methods=['GET'])
+def stats():
+    response_body = {}
+    # Traer todos los registros de mi base de datos
+    rows = db.session.execute(db.select(Stats)).scalars()
+    result = [row.serialize() for row in rows]
+    print("PRIMERO")
+    # Pregunto si no traje nada, en ese caso voy a la API y traigo todo.
+    if not result:
+        print(f"Error al obtener datos de la API: {response.status_code}")
+        response_body['message'] = f"Error al obtener datos de la API: {response.status_code}"
+
+    # Muestro todos los registros que tengo en la base
+    response_body['results'] = result
+    return response_body, 200
+
+
+@api.route('/loaddata', methods=['GET'])
+def loaddata():
+    response_body = {}
+    current_season = '2024'
+    response = requests.get(f'http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/{current_season}/')
+    if response.status_code == 200:
+            season = Seasons(year=current_season)
+            db.session.add(season)
+            data = response.json()
+            for player in data:
+                print(player['team'])
+                team_abr = player['team'] if player['team'] != 'PHO' else 'PHX'
+                team = db.session.execute(db.select(Teams).where(Teams.abbreviation == team_abr)).scalar()
+                if not team:
+                    response_body['message'] = 'Error no se encontro el team'
+                    return response_body, 404
+                player_name = player["playerName"]
+                print(f"Consultando datos para el jugador: {player_name}")
+                row = Players(playerName=player["playerName"],
+                                 position=player["position"],
+                                 team_id=team.id)
+                                 # El campo birth_date ya no se incluye
+                db.session.add(row)
+                db.session.commit()
+                # Aquí eliminamos el manejo de birth_date
+                stat = Stats(games=player["games"],
+                            assists=player["assists"],
+                            points=player["points"],
+                            games_started=player["gamesStarted"],
+                            minutes_pg=player["minutesPg"],
+                            field_goals=player["fieldGoals"],
+                            field_attempts=player["fieldAttempts"],
+                            field_percent=player["fieldPercent"],
+                            three_fg=player["threeFg"],
+                            three_attempts=player["threeAttempts"],
+                            three_percent=player["threePercent"],
+                            two_fg=player["twoFg"],
+                            two_attempts=player["twoAttempts"],
+                            two_percent=player["twoPercent"],
+                            effect_fg_percent=player["effectFgPercent"],
+                            ft=player["ft"],
+                            ft_attempts=player["ftAttempts"],
+                            ft_percent=player["ftPercent"],
+                            offensive_rb=player["offensiveRb"],
+                            defensive_rb=player["defensiveRb"],
+                            total_rb=player["totalRb"],
+                            steals=player["steals"],
+                            blocks=player["blocks"],
+                            turnovers=player["turnovers"],
+                            personal_fouls=player["personalFouls"],
+                            player_id=row.id,
+                            season_id=season.id,
+                            team_id=team.id)
+                db.session.add(stat)
+            # Realiza el commit después de agregar todos los jugadores
+            db.session.commit()
+            # Cuando termina el ciclo, vuelvo a hacer el select
+            rows = db.session.execute(db.select(Stats)).scalars()
+            result = [row.serialize() for row in rows]
+            response_body['results'] = result
+            return response_body, 200
+
 
 # PLAYER STATS API http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024
 # TEAMS API https://api.balldontlie.io/v1/teams?Authorization=d51f0c54-d27d-4844-a944-92f1e747c09d
