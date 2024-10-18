@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import injectContext from "./store/appContext";
 import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
 import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
-import LoginForm from "./component/LoginForm.jsx";
+import LoginForm from "./component/LoginForm.jsx"; 
 import { Home } from "./pages/Home.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
-import Teams from "./component/Teams.jsx";
+import Teams from "./component/Teams.jsx"; 
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
+    const [showLoginForm, setShowLoginForm] = useState(false);
+
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
     return (
@@ -21,10 +23,10 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
-                        <Route element={<Home />} path="/" />
+                        <Route element={<Home />} path="/home" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<Teams />} path="/teams" /> {/* Añade esta línea */}
+                        <Route element={<Teams />} path="/teams" /> 
                         <Route element={<h1>Not found!</h1>} path="*" />
                         <Route element={<LoginForm />} path="/" />
                     </Routes>
