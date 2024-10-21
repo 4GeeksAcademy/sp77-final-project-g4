@@ -43,13 +43,13 @@ class Posts(db.Model):
 
 class Teams(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    conference = db.Column(db.String, unique=False, nullable=False)
-    division = db.Column(db.String, unique=False, nullable=False)
-    city = db.Column(db.String, unique=False, nullable=False)
+    conference = db.Column(db.String, unique=False, nullable=True)
+    division = db.Column(db.String, unique=False, nullable=True)
+    city = db.Column(db.String, unique=False, nullable=True)
     name = db.Column(db.String, unique=True, nullable=False)
-    full_name = db.Column(db.String, unique=True, nullable=False)
+    full_name = db.Column(db.String, unique=True, nullable=True)
     abbreviation = db.Column(db.String, unique=True, nullable=False)
-    
+
     def __repr__(self):
         return f'<Team: {self.abbreviation} - {self.name} >'
 
@@ -66,20 +66,16 @@ class Teams(db.Model):
 class Players(db.Model):
     __tablename__ = 'players'
     id = db.Column(db.Integer, primary_key=True)
+    api_player_id = db.Column(db.String, unique=True, nullable=False)
     playerName = db.Column(db.String, unique=False, nullable=False)
-    position = db.Column(db.String, unique=False, nullable=False)
-    # birth_date = db.Column(db.DateTime, nullable=True) # Revisar formato de fecha
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('players_to', lazy='select'))
 
     def __repr__(self):
         return f'<Player: {self.playerName} >'
 
     def serialize(self):
         return {'id': self.id,
+                'api_player_id': self.api_player_id,
                 'playerName': self.playerName,
-                'position': self.position,
-                # 'team': self.team_to.serialize()
                 }
 
 
@@ -169,4 +165,3 @@ class Stats(db.Model):
                 'turnovers': self.turnovers,
                 'personal_fouls': self.personal_fouls
                 }
-
