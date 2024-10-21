@@ -195,7 +195,7 @@ def loaddata():
                 #               playerName=player["playerName"])
                 # db.session.add(row)
                 # db.session.commit()
-                rows = db.session.execute(db.select(Players)).scalar()
+                print(player["playerId"])
                 stat = Stats(games=player["games"],
                              assists=player["assists"],
                              points=player["points"],
@@ -221,9 +221,9 @@ def loaddata():
                              blocks=player["blocks"],
                              turnovers=player["turnovers"],
                              personal_fouls=player["personalFouls"],
-                             player_id=rows.id,
+                             player_id=player["playerId"],
                              season_id=season.id,
-                             team_id=team.id)
+                             team_id=team.abbreviation)
                 db.session.add(stat)
                 db.session.commit()
             # Realiza el commit después de agregar todos los jugadores

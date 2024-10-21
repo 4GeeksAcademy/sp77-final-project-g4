@@ -75,13 +75,12 @@ class Players(db.Model):
     def serialize(self):
         return {'id': self.id,
                 'api_player_id': self.api_player_id,
-                'playerName': self.playerName,
-                }
+                'playerName': self.playerName}
 
 
 class Seasons(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    year = db.Column(db.String, unique=False, nullable=False)
+    year = db.Column(db.String, unique=True, nullable=False)
 
 
 class FavoritePlayers(db.Model):
@@ -127,15 +126,15 @@ class Stats(db.Model):
     blocks = db.Column(db.String, unique=False, nullable=True)
     turnovers = db.Column(db.String, unique=False, nullable=True)
     personal_fouls = db.Column(db.String, unique=False, nullable=True)
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    team_id = db.Column(db.String, db.ForeignKey('teams.abbreviation'), nullable=False)
     team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('stats_to', lazy='select'))
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
+    player_id = db.Column(db.String, db.ForeignKey('players.api_player_id'), nullable=False)
     player_to = db.relationship('Players', foreign_keys=[player_id], backref=db.backref('stats_to', lazy='select'))
     season_id = db.Column(db.Integer, db.ForeignKey('seasons.id'), nullable=False)
     season_to = db.relationship('Seasons', foreign_keys=[season_id], backref=db.backref('stats_to', lazy='select'))
 
     def __repr__(self):
-        return f'<Player: {self.player_id} >'
+        return f'<Player: {self.player_id} - {self.team_id} >'
 
     def serialize(self):
         return {'id': self.id,
@@ -163,5 +162,8 @@ class Stats(db.Model):
                 'steals': self.steals,
                 'blocks': self.blocks,
                 'turnovers': self.turnovers,
-                'personal_fouls': self.personal_fouls
+                'personal_fouls': self.personal_fouls,
+                'player_id': self.player_to.api_player_id,
+                'season_id': self.season_id,
+                'team_id': self.team_to.abbreviation
                 }
