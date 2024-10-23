@@ -30,37 +30,43 @@ def teams():
     result = [row.serialize() for row in rows]
     print(len(result))
     # Pregunto si no traje nada, en ese caso voy a api de SWAPI y traigo todo.
-    if not result:
-        api_key = os.getenv("API_KEY_BALLDONTLIE")
-        for id in range(1, 52):
-            url = f"https://api.balldontlie.io/v1/teams/{id}?Authorization={api_key}"
-            payload = {}
-            headers = {'Authorization': api_key}
-            response = requests.request("GET", url, headers=headers, data=payload)
-            if response.status_code == 200:
-                data = response.json()
-                print(data["data"]["abbreviation"])
-                row = Teams(conference=data["data"]["conference"],
-                                division=data["data"]["division"],
-                                city=data["data"]["city"],
-                                name=data["data"]["name"],
-                                full_name=data["data"]["full_name"],
-                                abbreviation=data["data"]["abbreviation"])
-                db.session.add(row)
-                db.session.commit()
-        # Cuando termina el ciclo, vuelvo a hacer el select
+    # if not result:
+    api_key = os.getenv("API_KEY_BALLDONTLIE")
+    for id in range(1, 52):
+        url = f"https://api.balldontlie.io/v1/teams/{id}?Authorization={api_key}"
+        payload = {}
+        headers = {'Authorization': api_key}
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            data = response.json()
+            print(data["data"]["abbreviation"])
+            team = db.session.execute(db.select(Teams).where(Teams.abbreviation == data["data"]["abbreviation"])).scalar()
+            if team:
+                continue
+            row = Teams(conference=data["data"]["conference"],
+                            division=data["data"]["division"],
+                            city=data["data"]["city"],
+                            name=data["data"]["name"],
+                            full_name=data["data"]["full_name"],
+                            abbreviation=data["data"]["abbreviation"])
+            db.session.add(row)
+            db.session.commit()
+    # Cuando termina el ciclo, vuelvo a hacer el select
+    team = db.session.execute(db.select(Teams).where(Teams.abbreviation == 'TOT')).scalar()
+    if not team:
         row = Teams(conference='TOTAL',
-                                division='TOTAL',
-                                city='TOTAL',
-                                name='TOTAL',
-                                full_name='TOTAL',
-                                abbreviation='TOT')
+                            division='TOTAL',
+                            city='TOTAL',
+                            name='TOTAL',
+                            full_name='TOTAL',
+                            abbreviation='TOT')
         db.session.add(row)
         db.session.commit()
-        rows = db.session.execute(db.select(Teams)).scalars()
+    rows = db.session.execute(db.select(Teams)).scalars()
     # Muestro todos los registros que tengo en la base
     result = [row.serialize() for row in rows]
     response_body['results'] = result
+    print(len(result))
     return response_body, 200
 
 
@@ -72,39 +78,57 @@ def players():
     result = [row.serialize() for row in rows]
     print("PRIMERO")
     # Pregunto si no traje nada, en ese caso voy a la API y traigo todo.
-    if not result:
-        print("SEGUNDO")
-        response = requests.get('http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024/')
-        
-        if response.status_code == 200:
-            data = response.json()
-            for player in data:
-                player_name = player["playerName"]
-                print(f"Consultando datos para el jugador: {player_name}")
-
-                # Aquí eliminamos el manejo de birth_date
-                row = Players(
-                    id=player["id"],
-                    playerName=player["playerName"],
-                    position=player["position"],
-                    # team_id=player["team"]
-                    # El campo birth_date ya no se incluye
-                )
-
-                db.session.add(row)
-
-            # Realiza el commit después de agregar todos los jugadores
-            db.session.commit()
-
-            # Cuando termina el ciclo, vuelvo a hacer el select
-            rows = db.session.execute(db.select(Players)).scalars()
-            result = [row.serialize() for row in rows]
-        else:
-            print(f"Error al obtener datos de la API: {response.status_code}")
-
+    # if not result:
+    print("SEGUNDO")
+    response = requests.get('http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024/')
+    if response.status_code == 200:
+        data = response.json()
+        for player in data:
+            player_name = player["playerName"]
+            row = db.session.execute(db.select(Players).where(Players.api_player_id == player["playerId"])).scalar()
+            if row:
+                continue
+            print(f"Consultando datos para el jugador: {player_name}")
+            # Aquí eliminamos el manejo de birth_date
+            row = Players(api_player_id=player["playerId"],
+                          playerName=player["playerName"])
+            db.session.add(row)
+        # Realiza el commit después de agregar todos los jugadores
+        db.session.commit()
+        # Cuando termina el ciclo, vuelvo a hacer el select
+        rows = db.session.execute(db.select(Players)).scalars()
+        result = [row.serialize() for row in rows]
+    else:
+        print(f"Error al obtener datos de la API: {response.status_code}")
     # Muestro todos los registros que tengo en la base
     response_body['results'] = result
     return response_body, 200
+
+
+@api.route('/players/<int:id>', methods=['GET'])
+def character(id):
+    response_body = {}
+    url=f'https://www.swapi.tech/api/people/{id}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        print(data["result"]["properties"]["height"])
+        print(data["result"]["properties"]["mass"])
+        print(data["result"]["uid"])
+        row = Characters(id=data["result"]["uid"],
+                          name=data["result"]["properties"]["name"],
+                          height=data["result"]["properties"]["height"],
+                          mass=data["result"]["properties"]["mass"],
+                          hair_color=data["result"]["properties"]["hair_color"],
+                          skin_color=data["result"]["properties"]["skin_color"],
+                          eye_color=data["result"]["properties"]["eye_color"],
+                          birth_year=data["result"]["properties"]["birth_year"],
+                          gender=data["result"]["properties"]["gender"])
+        db.session.add(row)
+        db.session.commit()
+        response_body['results'] = data
+    return response_body, 200
+
 
 # @api.route('/seasons', methods=['GET'])
 # def seasons():
@@ -149,51 +173,61 @@ def loaddata():
             data = response.json()
             for player in data:
                 print(player['team'])
-                team_abr = player['team'] if player['team'] != 'PHO' else 'PHX'
+                if player['team'] == 'PHO':
+                    team_abr = 'PHX'
+                elif player['team'] == 'CHO':
+                    team_abr = 'CHA'
+                elif player['team'] == 'BRK':
+                    team_abr = 'BKN'
+                else:
+                    team_abr = player['team']
                 team = db.session.execute(db.select(Teams).where(Teams.abbreviation == team_abr)).scalar()
                 if not team:
-                    response_body['message'] = 'Error no se encontro el team'
-                    return response_body, 404
-                player_name = player["playerName"]
-                print(f"Consultando datos para el jugador: {player_name}")
-                row = Players(playerName=player["playerName"],
-                                 position=player["position"],
-                                 team_id=team.id)
-                                 # El campo birth_date ya no se incluye
-                db.session.add(row)
-                db.session.commit()
-                # Aquí eliminamos el manejo de birth_date
+                    pass
+                    # response_body['message'] = 'Error no se encontro el team'
+                    # return response_body, 404
+                # player_name = player["playerName"]
+                # rows = db.session.execute(db.select(Stats)).scalars()
+                # result = [row.serialize() for row in rows]
+                # print(f"Consultando datos para el jugador: {player_name}")
+                # # Aquí eliminamos el manejo de birth_date
+                # row = Players(api_player_id=player["playerId"],
+                #               playerName=player["playerName"])
+                # db.session.add(row)
+                # db.session.commit()
+                print(player["playerId"])
                 stat = Stats(games=player["games"],
-                            assists=player["assists"],
-                            points=player["points"],
-                            games_started=player["gamesStarted"],
-                            minutes_pg=player["minutesPg"],
-                            field_goals=player["fieldGoals"],
-                            field_attempts=player["fieldAttempts"],
-                            field_percent=player["fieldPercent"],
-                            three_fg=player["threeFg"],
-                            three_attempts=player["threeAttempts"],
-                            three_percent=player["threePercent"],
-                            two_fg=player["twoFg"],
-                            two_attempts=player["twoAttempts"],
-                            two_percent=player["twoPercent"],
-                            effect_fg_percent=player["effectFgPercent"],
-                            ft=player["ft"],
-                            ft_attempts=player["ftAttempts"],
-                            ft_percent=player["ftPercent"],
-                            offensive_rb=player["offensiveRb"],
-                            defensive_rb=player["defensiveRb"],
-                            total_rb=player["totalRb"],
-                            steals=player["steals"],
-                            blocks=player["blocks"],
-                            turnovers=player["turnovers"],
-                            personal_fouls=player["personalFouls"],
-                            player_id=row.id,
-                            season_id=season.id,
-                            team_id=team.id)
+                             assists=player["assists"],
+                             points=player["points"],
+                             games_started=player["gamesStarted"],
+                             minutes_pg=player["minutesPg"],
+                             field_goals=player["fieldGoals"],
+                             field_attempts=player["fieldAttempts"],
+                             field_percent=player["fieldPercent"],
+                             three_fg=player["threeFg"],
+                             three_attempts=player["threeAttempts"],
+                             three_percent=player["threePercent"],
+                             two_fg=player["twoFg"],
+                             two_attempts=player["twoAttempts"],
+                             two_percent=player["twoPercent"],
+                             effect_fg_percent=player["effectFgPercent"],
+                             ft=player["ft"],
+                             ft_attempts=player["ftAttempts"],
+                             ft_percent=player["ftPercent"],
+                             offensive_rb=player["offensiveRb"],
+                             defensive_rb=player["defensiveRb"],
+                             total_rb=player["totalRb"],
+                             steals=player["steals"],
+                             blocks=player["blocks"],
+                             turnovers=player["turnovers"],
+                             personal_fouls=player["personalFouls"],
+                             player_id=player["playerId"],
+                             season_id=season.id,
+                             team_id=team.abbreviation)
                 db.session.add(stat)
+                db.session.commit()
             # Realiza el commit después de agregar todos los jugadores
-            db.session.commit()
+            
             # Cuando termina el ciclo, vuelvo a hacer el select
             rows = db.session.execute(db.select(Stats)).scalars()
             result = [row.serialize() for row in rows]
