@@ -1,7 +1,8 @@
 import os
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from .models import db, Users, Posts, Teams, Players, Seasons
+from .models import db, Users, Posts, Teams, Players, Seasons, Stats
+
 
 
 def setup_admin(app):
@@ -13,4 +14,6 @@ def setup_admin(app):
     admin.add_view(ModelView(Teams, db.session))
     admin.add_view(ModelView(Players, db.session))
     admin.add_view(ModelView(Seasons, db.session))
+    admin.add_view(ModelView(Stats, db.session))
+
     
