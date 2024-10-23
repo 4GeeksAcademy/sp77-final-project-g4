@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import LoginForm from "./LoginForm.jsx";
+import nbaLogoTransparentUrl from "../../img/nba-logo-transparent.png";
 
 export const Navbar = () => {
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -48,7 +49,8 @@ export const Navbar = () => {
         <nav className="navbar navbar-light bg-light">
             <div className="container">
                 <Link to="/">
-                    <span className="navbar-brand mb-0 h1">React Boilerplate</span>
+                    {/*<span className="navbar-brand mb-0 h1"></span>*/}
+                    <img src={nbaLogoTransparentUrl}  alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto'}}/>
                 </Link>
                 <div className="ml-auto">
                     <Link to="/demo">

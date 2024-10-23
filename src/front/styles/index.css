@@ -1,3 +1,17 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
+    import ball from './../img/basketball.jpg'
+
+body {
+    background-image: url('./../img/basketball.jpg');
+    background-size: cover; /* Para cubrir toda la pantalla 
+    background-position: center; /* Centra la imagen 
+    background-repeat: no-repeat; /* Evita que la imagen se repita 
+}
 */
+body {
+    background-image:"../img/basketball.jpg";
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;  
+}

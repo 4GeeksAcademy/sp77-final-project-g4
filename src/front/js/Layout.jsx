@@ -10,6 +10,7 @@ import { Home } from "./pages/Home.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import Teams from "./component/Teams.jsx"; 
+import ball from '../img/basketball.jpg'
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -18,12 +19,14 @@ const Layout = () => {
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
     return (
-        <div>
+        <div style={{backgroundImage: `url(${ball})`, backgroundRepeat: `no-repeat`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: '0.8'}} className="d-flex flex-column min-vh-100">
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
+                
                     <Routes>
-                        <Route element={<Home />} path="/home" />
+                        
+                        <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Teams />} path="/teams" /> 
