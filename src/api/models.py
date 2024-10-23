@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-
-
+from datetime import date
 db = SQLAlchemy()
 
 
@@ -68,6 +66,10 @@ class Players(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     api_player_id = db.Column(db.String, unique=True, nullable=False)
     playerName = db.Column(db.String, unique=False, nullable=False)
+    position = db.Column(db.String, unique=False, nullable=False)
+    birth_date = db.Column(db.Date, nullable=False)  # Revisar formato de fecha
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('players_to', lazy='select'))
 
     def __repr__(self):
         return f'<Player: {self.playerName} >'
@@ -75,7 +77,9 @@ class Players(db.Model):
     def serialize(self):
         return {'id': self.id,
                 'api_player_id': self.api_player_id,
-                'playerName': self.playerName}
+                'playerName': self.playerName,
+                'position': self.position,
+                'birth_date': self.birth_date}
 
 
 class Seasons(db.Model):
@@ -88,15 +92,11 @@ class FavoritePlayers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     favourite_player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
     favourite_player_to = db.relationship('Players', foreign_keys=[favourite_player_id], backref=db.backref('user_fans_to', lazy='select'))
-    # favourite_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    # favourite_team_to = db.relationship('Teams', foreign_keys=[favourite_team_id], backref=db.backref('favourite_team_to', lazy='select'))
-    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # user_to = db.relationship('Users', foreign_keys=[favourite_team_id], backref=db.backref('Favourite_teams_to', lazy='select'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('favourite_players_to', lazy='select'))
 
     def __repr__(self):
-        return f'Siguiendo a: {self.favourite_player_id} - {self.favourite_team_id}'
+        return f'Siguiendo a: {self.favourite_player_id}'
 
 
 class Stats(db.Model):
@@ -151,7 +151,7 @@ class Stats(db.Model):
                 'three_percent': self.three_percent,
                 'two_fg': self.two_fg,
                 'two_attempts': self.two_attempts,
-                'two_percent': self.three_percent,
+                'two_percent': self.two_percent,
                 'effect_fg_percent': self.effect_fg_percent,
                 'ft': self.ft,
                 'ft_attempts': self.ft_attempts,

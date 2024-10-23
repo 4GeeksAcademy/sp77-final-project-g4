@@ -6,6 +6,10 @@ const Teams = () => {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [players, setPlayers] = useState({});
+    const [expandedTeam, setExpandedTeam] = useState(null); 
+
+    const AUTH_TOKEN = "d51f0c54-d27d-4844-a944-92f1e747c09d"; 
 
     useEffect(() => {
         const fetchTeams = async () => {
@@ -13,14 +17,14 @@ const Teams = () => {
                 const response = await fetch("https://api.balldontlie.io/v1/teams", {
                     method: "GET",
                     headers: {
-                        'Authorization': `d51f0c54-d27d-4844-a944-92f1e747c09d` 
-                    }
+                        'Authorization': AUTH_TOKEN,
+                    },
                 });
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
                 const data = await response.json();
-                setTeams(data.data.slice(0, 30));
+                setTeams(data.data.slice(0, 30)); 
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -30,6 +34,30 @@ const Teams = () => {
 
         fetchTeams();
     }, []);
+
+    const fetchPlayers = async (teamId) => {
+        if (players[teamId]) {
+            setExpandedTeam(expandedTeam === teamId ? null : teamId); 
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://api.balldontlie.io/v1/players?team_ids[]=${teamId}`, {
+                method: "GET",
+                headers: {
+                    'Authorization': AUTH_TOKEN,
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            setPlayers((prevPlayers) => ({ ...prevPlayers, [teamId]: data.data })); 
+            setExpandedTeam(teamId); 
+        } catch (error) {
+            setError(error.message);
+        }
+    };
 
     if (loading) {
         return <div>Loading teams...</div>;
@@ -74,28 +102,23 @@ const Teams = () => {
 
     return (
         <div>
-            <h2>NBA Teams</h2>
-            <ul>
-                {teams.map((team) => {
-                    const Logo = logoComponents[team.id];
-                    return (
-                        <li
-                            key={team.id}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                backgroundColor: "#f8f9fa",
-                                margin: "5px",
-                                padding: "10px",
-                                borderRadius: "5px"
-                            }}
-                        >
-                            {Logo ? <Logo style={{ width: "30px", height: "30px", marginRight: "10px" }} /> : null}
-                            {team.full_name}
-                        </li>
-                    );
-                })}
-            </ul>
+            {teams.map((team) => {
+                const LogoComponent = logoComponents[team.id];
+                return (
+                    <div key={team.id} onClick={() => fetchPlayers(team.id)}>
+                        <LogoComponent size={50} />
+                        <p>{team.full_name}</p>
+                        {expandedTeam === team.id && (
+                            <div>
+                                <h4>Players:</h4>
+                                {players[team.id]?.map((player) => (
+                                    <p key={player.id}>{player.first_name} {player.last_name}</p>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
         </div>
     );
 };
