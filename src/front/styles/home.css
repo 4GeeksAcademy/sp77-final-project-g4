@@ -19,3 +19,11 @@
     flex-direction: column;
     justify-content: space-between; 
   }*/
+.home-content{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: gold;
+    border-color: darkgrey;
+    font-size: xx-large;
+    text-align: end;
+    
+}
