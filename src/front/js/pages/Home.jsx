@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext.js";
 import nbaLogoTransparentUrl from "../../img/nba-logo-transparent.png";
-/*import "../../styles/home.css";*/
+import "../../styles/home.css";
 import basketballUrl from "../../img/basketball.jpg";
 
 
@@ -16,11 +16,14 @@ export const Home = () => {
 				<div className="alert alert-info">
 					{store.message || "Loading message from the backend (make sure your python backend is running)..."}
 				</div>
-					<p>
-						This boilerplate comes with lots of documentation:{" "}
+					<p className="home-content">
+					    
+						Bienvenido a la web de estadisticas de la NBA
+						
+						{/*This boilerplate comes with lots of documentation:{" "}
 						<a href="https://start.4geeksacademy.com/starters/react-flask">
 							Read documentation
-						</a>
+						</a>*/}
 					</p>
 			</div>
 		</div>
