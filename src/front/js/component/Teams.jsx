@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 // Importar los logos de los equipos específicos
 import { ATL, BKN, BOS, CHA, CHI, CLE, DAL, DEN, DET, GSW, HOU, IND, LAC, LAL, MEM, MIA, MIL, MIN, NOP, NYK, OKC, ORL, PHI, PHX, POR, SAC, SAS, TOR, UTA, WAS } from "react-nba-logos";
 
@@ -6,25 +7,15 @@ const Teams = () => {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [players, setPlayers] = useState({});
-    const [expandedTeam, setExpandedTeam] = useState(null); 
 
-    const AUTH_TOKEN = "d51f0c54-d27d-4844-a944-92f1e747c09d"; 
+    // Obtener la URL del backend desde el archivo .env
+    const backendUrl = process.env.BACKEND_URL;
 
     useEffect(() => {
         const fetchTeams = async () => {
             try {
-                const response = await fetch("https://api.balldontlie.io/v1/teams", {
-                    method: "GET",
-                    headers: {
-                        'Authorization': AUTH_TOKEN,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                const data = await response.json();
-                setTeams(data.data.slice(0, 30)); 
+                const response = await axios.get(`${backendUrl}api/teams`);
+                setTeams(response.data.results.slice(0, 30)); // Ajusta según tu respuesta
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -33,31 +24,7 @@ const Teams = () => {
         };
 
         fetchTeams();
-    }, []);
-
-    const fetchPlayers = async (teamId) => {
-        if (players[teamId]) {
-            setExpandedTeam(expandedTeam === teamId ? null : teamId); 
-            return;
-        }
-
-        try {
-            const response = await fetch(`https://api.balldontlie.io/v1/players?team_ids[]=${teamId}`, {
-                method: "GET",
-                headers: {
-                    'Authorization': AUTH_TOKEN,
-                },
-            });
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const data = await response.json();
-            setPlayers((prevPlayers) => ({ ...prevPlayers, [teamId]: data.data })); 
-            setExpandedTeam(teamId); 
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }, [backendUrl]);
 
     if (loading) {
         return <div>Loading teams...</div>;
@@ -105,17 +72,9 @@ const Teams = () => {
             {teams.map((team) => {
                 const LogoComponent = logoComponents[team.id];
                 return (
-                    <div key={team.id} onClick={() => fetchPlayers(team.id)}>
+                    <div key={team.id}>
                         <LogoComponent size={50} />
                         <p>{team.full_name}</p>
-                        {expandedTeam === team.id && (
-                            <div>
-                                <h4>Players:</h4>
-                                {players[team.id]?.map((player) => (
-                                    <p key={player.id}>{player.first_name} {player.last_name}</p>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 );
             })}
