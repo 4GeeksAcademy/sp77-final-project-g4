@@ -66,10 +66,6 @@ class Players(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     api_player_id = db.Column(db.String, unique=True, nullable=False)
     playerName = db.Column(db.String, unique=False, nullable=False)
-    position = db.Column(db.String, unique=False, nullable=False)
-    birth_date = db.Column(db.Date, nullable=False)  # Revisar formato de fecha
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    team_to = db.relationship('Teams', foreign_keys=[team_id], backref=db.backref('players_to', lazy='select'))
 
     def __repr__(self):
         return f'<Player: {self.playerName} >'
@@ -77,9 +73,7 @@ class Players(db.Model):
     def serialize(self):
         return {'id': self.id,
                 'api_player_id': self.api_player_id,
-                'playerName': self.playerName,
-                'position': self.position,
-                'birth_date': self.birth_date}
+                'playerName': self.playerName}
 
 
 class Seasons(db.Model):
