@@ -11,6 +11,7 @@ import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import Teams from "./component/Teams.jsx";
 import ball from '../img/basketball.jpg';
+import { Stats } from "./pages/Stats.jsx";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -30,6 +31,7 @@ const Layout = () => {
                         <Route element={<Teams />} path="/teams" /> 
                         <Route element={<LoginForm />} path="/login" /> {/* Cambié el path para no duplicar "/" */}
                         <Route element={<h1>Not found!</h1>} path="*" />
+                        <Route element={<Stats />} path="/stats" /> 
                     </Routes>
                     <Footer />
                 </ScrollToTop>
