@@ -32,7 +32,7 @@ def teams():
     # Pregunto si no traje nada, en ese caso voy a api de SWAPI y traigo todo.
     # if not result:
     api_key = os.getenv("API_KEY_BALLDONTLIE")
-    for id in range(1, 52):
+    for id in range(1, 31):
         url = f"https://api.balldontlie.io/v1/teams/{id}?Authorization={api_key}"
         payload = {}
         headers = {'Authorization': api_key}
@@ -234,6 +234,67 @@ def loaddata():
             response_body['results'] = result
             return response_body, 200
 
+@api.route('/top-players-points', methods=['GET'])
+def get_top_players():
+    players = (
+        db.session.query(Stats, Players)
+        .join(Players, Stats.player_id == Players.api_player_id)
+        .filter(Stats.team_id == 'TOT')
+        .order_by(db.cast(Stats.points, db.Integer).desc())  # Convertir points a Integer
+        .limit(5)
+        .all()
+    )
+
+    response_data = [{
+        'id': stat.id,
+        'player_to': player.playerName,
+        'team_id': stat.team_id,
+        'points': stat.points
+    } for stat, player in players]
+
+    return jsonify(response_data)
+
+
+@api.route('/top-players-assists', methods=['GET'])
+def get_top_assists():
+    players = (
+        db.session.query(Stats, Players)
+        .join(Players, Stats.player_id == Players.api_player_id)
+        .filter(Stats.team_id == 'TOT')
+        .order_by(db.cast(Stats.assists, db.Integer).desc())  # Convertir points a Integer
+        .limit(5)
+        .all()
+    )
+
+    response_data = [{
+        'id': stat.id,
+        'player_to': player.playerName,
+        'team_id': stat.team_id,
+        'assists': stat.assists
+    } for stat, player in players]
+
+    return jsonify(response_data)
+
+
+@api.route('/top-players-games', methods=['GET'])
+def get_top_games():
+    players = (
+        db.session.query(Stats, Players)
+        .join(Players, Stats.player_id == Players.api_player_id)
+        .filter(Stats.team_id == 'TOT')
+        .order_by(db.cast(Stats.games, db.Integer).desc())  # Convertir points a Integer
+        .limit(5)
+        .all()
+    )
+
+    response_data = [{
+        'id': stat.id,
+        'player_to': player.playerName,
+        'team_id': stat.team_id,
+        'games': stat.games
+    } for stat, player in players]
+
+    return jsonify(response_data)
 
 # PLAYER STATS API http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024
 # TEAMS API https://api.balldontlie.io/v1/teams?Authorization=d51f0c54-d27d-4844-a944-92f1e747c09d
