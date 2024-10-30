@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import LoginForm from "./LoginForm.jsx";
 import nbaLogoTransparentUrl from "../../img/nba-logo-transparent.png";
 
+
 export const Navbar = () => {
     const [showLoginForm, setShowLoginForm] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -20,8 +21,8 @@ export const Navbar = () => {
     };
 
     const loginButtonHoverStyle = {
-        backgroundColor: "#0056b3", 
-        transform: "scale(1.05)", 
+        backgroundColor: "#0056b3",
+        transform: "scale(1.05)",
     };
 
     const teamsButtonStyle = {
@@ -37,8 +38,8 @@ export const Navbar = () => {
     };
 
     const teamsButtonHoverStyle = {
-        backgroundColor: "#b30000", 
-        transform: "scale(1.05)", 
+        backgroundColor: "#b30000",
+        transform: "scale(1.05)",
     };
 
     const handleLoginClick = () => {
@@ -48,6 +49,9 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-light bg-light">
             <div className="container">
+                <Link as={Link} to="/favorite-teams">Favorite Teams</Link>
+                <Link as={Link} to="/favorite-players">Favorite Players</Link>
+
                 <Link to="/">
                     {/*<span className="navbar-brand mb-0 h1"></span>*/}
                     <img src={nbaLogoTransparentUrl}  alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto'}}/>
