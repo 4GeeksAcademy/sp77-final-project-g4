@@ -9,7 +9,7 @@ export const Navbar = () => {
     const [isHovered, setIsHovered] = useState(false);
 
     const loginButtonStyle = {
-        backgroundColor: "#007bff", // Azul
+        backgroundColor: 
         color: "white",
         fontWeight: "bold",
         border: "none",

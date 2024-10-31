@@ -8,9 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             message: null,
             isAuthenticated: false,
             user: null,
-            errorMessage: null,
-            favoriteTeams: [], // Favoritos de equipos
-            favoritePlayers: [] // Favoritos de jugadores
+            errorMessage: null
         },
         actions: {
             exampleFunction: () => {
@@ -68,30 +66,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     errorMessage: null
                 });
                 console.log("Logout exitoso");
-            },
-            addFavoriteTeam: (team) => {
-                const store = getStore();
-                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
-                if (!isFavorite) {
-                    setStore({
-                        favoriteTeams: [...store.favoriteTeams, team]
-                    });
-                    console.log("Equipo agregado a favoritos", team);
-                } else {
-                    console.log("Este equipo ya está en favoritos.");
-                }
-            },
-            addFavoritePlayer: (player) => {
-                const store = getStore();
-                const isFavorite = store.favoritePlayers.some(favPlayer => favPlayer.id === player.id);
-                if (!isFavorite) {
-                    setStore({
-                        favoritePlayers: [...store.favoritePlayers, player]
-                    });
-                    console.log("Jugador agregado a favoritos");
-                } else {
-                    console.log("Este jugador ya está en favoritos.");
-                }
             }
         }
     };
