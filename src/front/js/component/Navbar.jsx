@@ -54,7 +54,7 @@ export const Navbar = () => {
 
                 <Link to="/">
                     {/*<span className="navbar-brand mb-0 h1"></span>*/}
-                    <img src={nbaLogoTransparentUrl}  alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto'}}/>
+                    <img src={nbaLogoTransparentUrl} alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto' }} />
                 </Link>
                 <div className="ml-auto">
                     <Link to="/demo">

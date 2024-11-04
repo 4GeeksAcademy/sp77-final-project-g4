@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 
 
-export const StatsPoints = () => {
+export const StatsBlocks = () => {
     const [players, setPlayers] = useState([]);
     const backendUrl = process.env.BACKEND_URL;
 
@@ -10,7 +10,7 @@ export const StatsPoints = () => {
         // Llamada a la API para obtener los jugadores con más puntos
         const fetchTopPlayers = async () => {
             try {
-                const response = await axios.get(`${backendUrl}api/top-players-points`);
+                const response = await axios.get(`${backendUrl}api/top-players-blocks`);
                 setPlayers(response.data);
             } catch (error) {
                 console.error("Error fetching top players data:", error);
@@ -23,14 +23,14 @@ export const StatsPoints = () => {
 
     return (
         <div className="container my-5">
-            <h2 className="text-center text-white mb-4">Puntos</h2>
+            <h2 className="text-center text-white mb-4">Blocks</h2>
 
             <table className="table bg-white table-hover text-center">
                 <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Jugador</th>
-                        <th scope="col">Puntos</th>
+                        <th scope="col">Asistencias</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +38,7 @@ export const StatsPoints = () => {
                         <tr key={player.id}>
                             <th scope="row">{index + 1}</th>
                             <td className="text-start">{player.player_to}</td>
-                            <td>{player.points}</td>
+                            <td>{player.blocks}</td>
                         </tr>
                     ))}
                 </tbody>

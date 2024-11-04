@@ -296,5 +296,93 @@ def get_top_games():
 
     return jsonify(response_data)
 
+
+@api.route('/top-players-blocks', methods=['GET'])
+def get_top_blocks():
+    players = (
+        db.session.query(Stats, Players)
+        .join(Players, Stats.player_id == Players.api_player_id)
+        .filter(Stats.team_id == 'TOT')
+        .order_by(db.cast(Stats.blocks, db.Integer).desc())  # Convertir points a Integer
+        .limit(5)
+        .all()
+    )
+
+    response_data = [{
+        'id': stat.id,
+        'player_to': player.playerName,
+        'team_id': stat.team_id,
+        'blocks': stat.blocks
+    } for stat, player in players]
+
+    return jsonify(response_data)
+
+
+@api.route('/top-players-turnovers', methods=['GET'])
+def get_top_turnovers():
+    players = (
+        db.session.query(Stats, Players)
+        .join(Players, Stats.player_id == Players.api_player_id)
+        .filter(Stats.team_id == 'TOT')
+        .order_by(db.cast(Stats.turnovers, db.Integer).desc())  # Convertir points a Integer
+        .limit(5)
+        .all()
+    )
+
+    response_data = [{
+        'id': stat.id,
+        'player_to': player.playerName,
+        'team_id': stat.team_id,
+        'turnovers': stat.turnovers
+    } for stat, player in players]
+
+    return jsonify(response_data)
+
+
+@api.route('/top-players-steals', methods=['GET'])
+def get_top_steals():
+    players = (
+        db.session.query(Stats, Players)
+        .join(Players, Stats.player_id == Players.api_player_id)
+        .filter(Stats.team_id == 'TOT')
+        .order_by(db.cast(Stats.steals, db.Integer).desc())  # Convertir points a Integer
+        .limit(5)
+        .all()
+    )
+
+    response_data = [{
+        'id': stat.id,
+        'player_to': player.playerName,
+        'team_id': stat.team_id,
+        'steals': stat.steals
+    } for stat, player in players]
+
+    return jsonify(response_data)
+
+
+# @api.route('/teams/<int:id>', methods=['GET'])
+# def teams(id):
+#     response_body = {}
+#     url=f'https://www.swapi.tech/api/people/{id}'
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         data = response.json()
+#         print(data["result"]["properties"]["height"])
+#         print(data["result"]["properties"]["mass"])
+#         print(data["result"]["uid"])
+#         row = Characters(id=data["result"]["uid"],
+#                           name=data["result"]["properties"]["name"],
+#                           height=data["result"]["properties"]["height"],
+#                           mass=data["result"]["properties"]["mass"],
+#                           hair_color=data["result"]["properties"]["hair_color"],
+#                           skin_color=data["result"]["properties"]["skin_color"],
+#                           eye_color=data["result"]["properties"]["eye_color"],
+#                           birth_year=data["result"]["properties"]["birth_year"],
+#                           gender=data["result"]["properties"]["gender"])
+#         db.session.add(row)
+#         db.session.commit()
+#         response_body['results'] = data
+#     return response_body, 200
+
 # PLAYER STATS API http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024
 # TEAMS API https://api.balldontlie.io/v1/teams?Authorization=d51f0c54-d27d-4844-a944-92f1e747c09d
