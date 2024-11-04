@@ -8,8 +8,6 @@ const Teams = () => {
 
     // Obtener la URL del backend desde el archivo .env
     const backendUrl = process.env.BACKEND_URL;
-
-    const backendUrl = process.env.BACKEND_URL;
     useEffect(() => {
         const fetchTeams = async () => {
             try {

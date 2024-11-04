@@ -10,13 +10,11 @@ import { Home } from "./pages/Home.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import Teams from "./component/Teams.jsx";
-<<<<<<< HEAD
 import FavoritePlayers from "./component/FavoritePlayers.jsx";
 import FavoriteTeams from "./component/ FavoriteTeams.jsx";
-=======
 import ball from '../img/basketball.jpg';
 import { Stats } from "./pages/Stats.jsx";
->>>>>>> develop
+
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -33,19 +31,15 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-<<<<<<< HEAD
                         <Route element={<Teams />} path="/teams" />
                         <Route element={<h1>Not found!</h1>} path="*" />
                         <Route element={<LoginForm />} path="/" />
                         <Route element={<FavoriteTeams />} path="/favorite-teams" />
                         <Route element={<FavoritePlayers />} path="/favorite-players" />
-
-=======
                         <Route element={<Teams />} path="/teams" /> 
                         <Route element={<LoginForm />} path="/login" /> {/* Cambié el path para no duplicar "/" */}
                         <Route element={<h1>Not found!</h1>} path="*" />
-                        <Route element={<Stats />} path="/stats" /> 
->>>>>>> develop
+                        <Route element={<Stats />} path="/stats" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>

@@ -5,7 +5,6 @@ import axios from 'axios';
 export const StatsAssists = () => {
     const [players, setPlayers] = useState([]);
     const backendUrl = process.env.BACKEND_URL;
-    console.log("Backend URL:", `${backendUrl}api/top-players-assists`);
 
     useEffect(() => {
         // Llamada a la API para obtener los jugadores con más puntos
