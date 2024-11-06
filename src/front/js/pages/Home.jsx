@@ -19,25 +19,21 @@ export const Home = () => {
 				</h1>
 			</div>
 			<div className="container mt-4">
-				<div className="d-flex justify-content-evenly">
-					<Link to="/TEAMS">
-						<div className="">
-							<div className="col-md-6">
-								<div className="card">
-									<img src={TEAMS} className="card-img-top" alt="Card Image" />
-								</div>
+				<div className="row justify-content-around">
+					<div className="col-5">
+						<Link to="/TEAMS">
+							<div className="card">
+								<img src={TEAMS} className="card-img-top" alt="Card Image" />
 							</div>
-						</div>
-					</Link>
-					<Link to="/STATS">
-						<div className="">
-							<div className="col-md-6">
-								<div className="card">
-									<img src={STATS} className="card-img-top" alt="Card Image" />
-								</div>
+						</Link>
+					</div>
+					<div className="col-5">
+						<Link to="/STATS">
+							<div className="card">
+								<img src={STATS} className="card-img-top" alt="Card Image" />
 							</div>
-						</div>
-					</Link>
+						</Link>
+					</div>
 				</div>
 				{/* <Link to="/teams">
 					<button className="btn btn-danger border-white btn-lg">
