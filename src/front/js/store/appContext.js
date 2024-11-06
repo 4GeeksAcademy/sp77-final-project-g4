@@ -7,11 +7,13 @@ const injectContext = PassedComponent => {
 	const StoreWrapper = props => {
 		// Inicializa el estado con los valores de `getState`
 		const [state, setState] = useState(() =>
+		const [state, setState] = useState(() =>
 			getState({
 				getStore: () => state.store,
 				getActions: () => state.actions,
 				setStore: updatedStore =>
 					setState({
+						store: { ...state.store, ...updatedStore },
 						store: { ...state.store, ...updatedStore },
 						actions: { ...state.actions }
 					})
@@ -30,6 +32,7 @@ const injectContext = PassedComponent => {
 			</Context.Provider>
 		);
 	};
+
 
 	return StoreWrapper;
 };
