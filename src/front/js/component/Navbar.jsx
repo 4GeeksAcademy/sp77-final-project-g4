@@ -1,86 +1,42 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import LoginForm from "./LoginForm.jsx";
+import { Context } from "../store/appContext";
 import nbaLogoTransparentUrl from "../../img/nba-logo-transparent.png";
 
-
 export const Navbar = () => {
+    const { store } = useContext(Context);
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
 
-    const loginButtonStyle = {
-        backgroundColor: 
+    const buttonStyle = {
+        backgroundColor: "#007bff",
         color: "white",
         fontWeight: "bold",
-        border: "none",
         padding: "10px 20px",
         borderRadius: "5px",
         cursor: "pointer",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
         transition: "background-color 0.3s, transform 0.3s",
-    };
-
-    const loginButtonHoverStyle = {
-        backgroundColor: "#0056b3",
-        transform: "scale(1.05)",
-    };
-
-    const teamsButtonStyle = {
-        backgroundColor: "red",
-        color: "white",
-        fontWeight: "bold",
-        border: "none",
-        padding: "10px 20px",
-        borderRadius: "5px",
-        cursor: "pointer",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-        transition: "background-color 0.3s, transform 0.3s",
-    };
-
-    const teamsButtonHoverStyle = {
-        backgroundColor: "#b30000",
-        transform: "scale(1.05)",
-    };
-
-    const handleLoginClick = () => {
-        setShowLoginForm(!showLoginForm);
     };
 
     return (
         <nav className="navbar navbar-light bg-light">
             <div className="container">
-                <Link as={Link} to="/favorite-teams">Favorite Teams</Link>
-                <Link as={Link} to="/favorite-players">Favorite Players</Link>
-
                 <Link to="/">
-                    {/*<span className="navbar-brand mb-0 h1"></span>*/}
-                    <img src={nbaLogoTransparentUrl}  alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto'}}/>
+                    <img src={nbaLogoTransparentUrl} alt="NBA Logo" style={{ width: '25px', height: 'auto' }} />
                 </Link>
                 <div className="ml-auto">
-                    <Link to="/demo">
-                        <button style={loginButtonStyle}>Check the Context in action</button>
-                    </Link>
                     <Link to="/teams">
-                        <button
-                            style={{
-                                ...teamsButtonStyle,
-                                ...(isHovered ? teamsButtonHoverStyle : {}),
-                            }}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                        >
-                            Teams
+                        <button style={buttonStyle}>Teams</button>
+                    </Link>
+                    
+                    <Link to="/favorites">
+                        <button style={buttonStyle}>
+                            Favorites {store.favoriteTeams.length > 0 && `(${store.favoriteTeams.length})`}
                         </button>
                     </Link>
-                    <button
-                        style={{
-                            ...loginButtonStyle,
-                            ...(isHovered ? loginButtonHoverStyle : {}),
-                        }}
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                        onClick={handleLoginClick}
-                    >
+                    
+                    {/* Botón de Log In */}
+                    <button style={buttonStyle} onClick={() => setShowLoginForm(!showLoginForm)}>
                         Log In
                     </button>
                     {showLoginForm && <LoginForm onClose={() => setShowLoginForm(false)} />}

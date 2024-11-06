@@ -8,7 +8,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             message: null,
             isAuthenticated: false,
             user: null,
-            errorMessage: null
+            errorMessage: null,
+            favoriteTeams: [] // Estado para almacenar equipos favoritos
         },
         actions: {
             exampleFunction: () => {
@@ -36,7 +37,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             login: async (username, password) => {
                 try {
-                    const response = await fetch("url back", {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ username, password })
@@ -66,6 +67,38 @@ const getState = ({ getStore, getActions, setStore }) => {
                     errorMessage: null
                 });
                 console.log("Logout exitoso");
+            },
+            addFavoriteTeam: (team) => {
+                const store = getStore();
+                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
+                if (!isFavorite) {
+                    setStore({
+                        favoriteTeams: [...store.favoriteTeams, team]
+                    });
+                    console.log("Equipo agregado a favoritos", team);
+                } else {
+                    console.log("Este equipo ya está en favoritos.");
+                }
+
+            
+            },
+
+
+            toggleFavoriteTeam: (team) => {
+                const store = getStore();
+                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
+                if (isFavorite) {
+                    // Si ya es favorito, lo eliminamos
+                    setStore({
+                        favoriteTeams: store.favoriteTeams.filter(favTeam => favTeam.id !== team.id)
+                    });
+                    console.log("Equipo eliminado de favoritos", team);
+                } else {
+                    setStore({
+                        favoriteTeams: [...store.favoriteTeams, team]
+                    });
+                    console.log("Equipo agregado a favoritos", team);
+                }
             }
         }
     };
