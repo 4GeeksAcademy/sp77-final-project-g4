@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from 'axios';
 import { Context } from "../store/appContext";
 import { ATL, BOS, BKN, CHA, CHI, CLE, DAL, DEN, DET, GSW, HOU, IND, LAC, LAL, MEM, MIA, MIL, MIN, NOP, NYK, OKC, ORL, PHI, PHX, POR, SAC, SAS, TOR, UTA, WAS } from "react-nba-logos";
-import FavoriteTeam from './FavoriteTeams.jsx';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios'; // Asegúrate de importar axios
 
 const Teams = () => {
     const { actions, store } = useContext(Context);
@@ -21,7 +20,7 @@ const Teams = () => {
             try {
                 const response = await axios.get(`${backendUrl}api/teams`);
                 if (isMounted) {
-                    setTeams(response.data.results.slice(0, 30));
+                    setTeams(response.data.results.slice(0, 30)); // Limitar a los primeros 30 equipos
                 }
             } catch (error) {
                 if (isMounted) {
@@ -33,7 +32,6 @@ const Teams = () => {
                 }
             }
         };
-
         fetchTeams();
 
         return () => {
@@ -44,6 +42,7 @@ const Teams = () => {
     if (loading) {
         return <div>Loading teams...</div>;
     }
+
     if (error) {
         return <div>Error: {error}</div>;
     }
@@ -62,21 +61,30 @@ const Teams = () => {
 
     return (
         <div>
-            <FavoriteTeam favoriteTeams={store.favoriteTeams} />
-            {teams.map((team) => {
-                const LogoComponent = logoComponents[team.id];
-                const isFavorite = store.favoriteTeams.some(fav => fav.id === team.id);
-                
-                return (
-                    <div key={team.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <LogoComponent size={50} />
-                        <p style={{ color: "white" }}>{team.full_name}</p>
-                        <button onClick={() => handleAddFavorite(team)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                            <FontAwesomeIcon icon={isFavorite ? faTrash : faHeart} color="red" />
-                        </button>
-                    </div>
-                );
-            })}
+            <h2>NBA Teams</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                {teams.map((team) => {
+                    const LogoComponent = logoComponents[team.id];
+                    const isFavorite = store.favoriteTeams.some(fav => fav.id === team.id);
+                    
+                    return (
+                        <div key={team.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+                            <LogoComponent size={50} />
+                            <p style={{ color: "white" }}>{team.full_name}</p>
+                            <button 
+                                onClick={() => handleAddFavorite(team)} 
+                                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                            >
+                                <FontAwesomeIcon 
+                                    icon={isFavorite ? faTrash : faHeart} 
+                                    color={isFavorite ? 'gray' : 'red'} 
+                                    size="lg" 
+                                />
+                            </button>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };

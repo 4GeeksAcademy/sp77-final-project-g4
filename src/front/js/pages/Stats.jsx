@@ -2,6 +2,9 @@ import React from "react";
 import { StatsPoints } from "../component/StatsPoints.jsx"
 import { StatsAssists } from "../component/StatsAssists.jsx"
 import { StatsGames } from "../component/StatsGames.jsx"
+import { StatsBlocks } from "../component/StatsBlocks.jsx"
+import { StatsTurnovers } from "../component/StatsTurnovers.jsx"
+import { StatsSteals} from "../component/StatsSteals.jsx"
 
 
 
@@ -19,13 +22,13 @@ export const Stats = () => {
                 <StatsGames />
             </div>
             <div className="col-3">
-                <StatsPoints />
+                <StatsBlocks />
             </div>
             <div className="col-3">
-                <StatsPoints />
+                <StatsTurnovers />
             </div>
             <div className="col-3">
-                <StatsPoints />
+                <StatsSteals />
             </div>
 		</div>
 	);

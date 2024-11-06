@@ -5,7 +5,6 @@ import axios from 'axios';
 export const StatsGames = () => {
     const [players, setPlayers] = useState([]);
     const backendUrl = process.env.BACKEND_URL;
-    console.log("Backend URL:", `${backendUrl}api/top-players-games`);
 
     useEffect(() => {
         // Llamada a la API para obtener los jugadores con más puntos
@@ -24,7 +23,7 @@ export const StatsGames = () => {
 
     return (
         <div className="container my-5">
-            <h2 className="text-center text-white mb-4">Asistencias</h2>
+            <h2 className="text-center text-white mb-4">Games</h2>
 
             <table className="table bg-white table-hover text-center">
                 <thead className="table-dark">
