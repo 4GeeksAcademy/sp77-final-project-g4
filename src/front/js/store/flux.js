@@ -81,15 +81,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                                     body: JSON.stringify({ username, password })
                                 });
                                 if (!response.ok) throw new Error("Credenciales incorrectas");
-                                if (!response.ok) throw new Error("Credenciales incorrectas");
-
-                                const data = await response.json();
                                 const data = await response.json();
                                 setStore({
                                     isAuthenticated: true,
                                     user: data.user,
-                                    errorMessage: null
-                        isAuthenticated: true,
+                                    errorMessage: null,
+                                    isAuthenticated: true,
                                     user: data.user,
                                     errorMessage: null
                                 });
@@ -98,8 +95,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                                 setStore({
                                     isAuthenticated: false,
                                     user: null,
-                                    errorMessage: error.message
-                        isAuthenticated: false,
+                                    errorMessage: error.message,
+                                    isAuthenticated: false,
                                     user: null,
                                     errorMessage: error.message
                                 });
@@ -110,8 +107,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                             setStore({
                                 isAuthenticated: false,
                                 user: null,
-                                errorMessage: null
-                    isAuthenticated: false,
+                                errorMessage: null,
+                                isAuthenticated: false,
                                 user: null,
                                 errorMessage: null
                             });
@@ -152,7 +149,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
                 };
             }
-        };
+        },
     };
-
+};
     export default getState;
