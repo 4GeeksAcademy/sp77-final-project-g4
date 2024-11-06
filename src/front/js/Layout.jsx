@@ -1,6 +1,5 @@
-
-import { Stats } from "./pages/Stats.jsx"; // Página de estadísticas
-import Favorites from "./component/FavoriteTeams.jsx";
+import React, { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import injectContext from "./store/appContext";
 import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
@@ -11,10 +10,12 @@ import { Home } from "./pages/Home.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import Teams from "./component/Teams.jsx";
+import Favorites from "./component/FavoriteTeams.jsx";
 import FavoritePlayers from "./component/FavoritePlayers.jsx";
 import FavoriteTeams from "./component/ FavoriteTeams.jsx";
 import ball from '../img/basketball.jpg';
 import { Stats } from "./pages/Stats.jsx";
+
 
 
 const Layout = () => {
