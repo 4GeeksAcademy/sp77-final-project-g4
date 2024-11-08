@@ -23,9 +23,9 @@ export const StatsTurnovers = () => {
 
     return (
         <div className="container my-5">
-            <h2 className="text-center text-white mb-4">Turnovers</h2>
+            <h2 className="text-center text-dark mb-4">Turnovers</h2>
 
-            <table className="table bg-white table-hover text-center">
+            <table className="table bg-white table-hover text-center border-danger">
                 <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
