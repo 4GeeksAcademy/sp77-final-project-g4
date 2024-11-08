@@ -14,6 +14,7 @@ import Favorites from "./component/FavoriteTeams.jsx";
 import FavoritePlayers from "./component/FavoritePlayers.jsx";
 import FavoriteTeams from "./component/ FavoriteTeams.jsx";
 import ball from '../img/basketball.jpg';
+import background from '../img/background.jpg';
 import { Stats } from "./pages/Stats.jsx";
 
 
@@ -25,7 +26,15 @@ const Layout = () => {
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
     return (
-        <div style={{ backgroundImage: `url(${ball})`, backgroundRepeat: `no-repeat`, backgroundSize: 'cover', backgroundPosition: 'center' }} className="d-flex flex-column min-vh-100">
+        <div
+        className="d-flex flex-column min-vh-100"
+        style={{
+            backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5)), url(${background})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+        }}
+    >
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
