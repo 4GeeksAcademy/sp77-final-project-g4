@@ -5,3 +5,25 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+/*.visible{
+    width: 20px; 
+    height: 50px;
+}*/
+/* Home.css */
+/*.home-background {
+    background-image: url('./path/../../img/basketball.jpg'); 
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+  }*/
+.home-content{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: gold;
+    border-color: darkgrey;
+    font-size: xx-large;
+    text-align: end;
+    
+}
