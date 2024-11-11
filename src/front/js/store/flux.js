@@ -44,9 +44,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify({ username, password })
                     });
                     if (!response.ok) throw new Error("Credenciales incorrectas");
-
                     const data = await response.json();
                     setStore({
+                        isAuthenticated: true,
+                        user: data.user,
+                        errorMessage: null,
                         isAuthenticated: true,
                         user: data.user,
                         errorMessage: null
@@ -56,6 +58,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({
                         isAuthenticated: false,
                         user: null,
+                        errorMessage: error.message,
+                        isAuthenticated: false,
+                        user: null,
                         errorMessage: error.message
                     });
                     console.log("Error en login:", error.message);
@@ -63,6 +68,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             logout: () => {
                 setStore({
+                    isAuthenticated: false,
+                    user: null,
+                    errorMessage: null,
                     isAuthenticated: false,
                     user: null,
                     errorMessage: null
@@ -80,6 +88,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } else {
                     console.log("Este equipo ya está en favoritos.");
                 }
+
+
             },
             toggleFavoriteTeam: (team) => {
                 const store = getStore();
@@ -97,8 +107,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Equipo agregado a favoritos", team);
                 }
             }
-        }
+        },
     };
 };
-
 export default getState;

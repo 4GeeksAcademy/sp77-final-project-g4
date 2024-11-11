@@ -4,19 +4,20 @@ import getState from "./flux.js";
 export const Context = React.createContext(null);
 
 const injectContext = PassedComponent => {
-  const StoreWrapper = props => {
-    // Inicializa el estado con los valores de `getState`
-    const [state, setState] = useState(() =>
-      getState({
-        getStore: () => state.store,
-        getActions: () => state.actions,
-        setStore: updatedStore =>
-          setState({
-            store: { ...state.store, ...updatedStore }, // Actualiza el estado correctamente
-            actions: { ...state.actions }
-          })
-      })
-    );
+	const StoreWrapper = props => {
+		// Inicializa el estado con los valores de `getState`
+		const [state, setState] = useState(() =>
+			getState({
+				getStore: () => state.store,
+				getActions: () => state.actions,
+				setStore: updatedStore =>
+					setState({
+						store: { ...state.store, ...updatedStore },
+						store: { ...state.store, ...updatedStore },
+						actions: { ...state.actions }
+					})
+			})
+		);
 
     // Ejecuta una acción al cargar el componente (si tienes alguna en flux.js)
     useEffect(() => {
@@ -24,12 +25,13 @@ const injectContext = PassedComponent => {
       // Ejemplo: state.actions.getInitialData();
     }, []);
 
-    return (
-      <Context.Provider value={state}>
-        <PassedComponent {...props} />
-      </Context.Provider>
-    );
-  };
+		return (
+			<Context.Provider value={state}>
+				<PassedComponent {...props} />
+			</Context.Provider>
+		);
+	};
+
 
   return StoreWrapper;
 };

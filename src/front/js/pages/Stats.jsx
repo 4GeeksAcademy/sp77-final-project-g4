@@ -4,32 +4,37 @@ import { StatsAssists } from "../component/StatsAssists.jsx"
 import { StatsGames } from "../component/StatsGames.jsx"
 import { StatsBlocks } from "../component/StatsBlocks.jsx"
 import { StatsTurnovers } from "../component/StatsTurnovers.jsx"
-import { StatsSteals} from "../component/StatsSteals.jsx"
+import { StatsSteals } from "../component/StatsSteals.jsx"
 
 
 
 export const Stats = () => {
 
-	return (
-		<div className="row">
-            <div className="col-3">
-                <StatsPoints />
+    return (
+        <div className="">
+            <div className="container d-flex justify-content-center">
+                <h1 className="text-center text-white fw-bolder bg-primary p-3 rounded"> /STATS</h1>
             </div>
-            <div className="col-3">
-                <StatsAssists />
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+                <div className="col">
+                    <StatsPoints />
+                </div>
+                <div className="col">
+                    <StatsAssists />
+                </div>
+                <div className="col">
+                    <StatsGames />
+                </div>
+                <div className="col">
+                    <StatsBlocks />
+                </div>
+                <div className="col">
+                    <StatsTurnovers />
+                </div>
+                <div className="col">
+                    <StatsSteals />
+                </div>
             </div>
-            <div className="col-3">
-                <StatsGames />
-            </div>
-            <div className="col-3">
-                <StatsBlocks />
-            </div>
-            <div className="col-3">
-                <StatsTurnovers />
-            </div>
-            <div className="col-3">
-                <StatsSteals />
-            </div>
-		</div>
-	);
+        </div>
+    );
 };

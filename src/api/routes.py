@@ -360,6 +360,16 @@ def get_top_steals():
     return jsonify(response_data)
 
 
+@api.route('/teams_list', methods=['GET'])
+def get_teams():
+    teams = Teams.query.all()  # Obtenemos todos los equipos de la base de datos
+    teams_list = [team.serialize() for team in teams]  # Serializamos cada equipo en una lista
+    return jsonify(teams_list)  # Devolvemos la lista en formato JSON
+
+if __name__ == '__main__':
+    api.run(debug=True)
+
+
 # @api.route('/teams/<int:id>', methods=['GET'])
 # def teams(id):
 #     response_body = {}

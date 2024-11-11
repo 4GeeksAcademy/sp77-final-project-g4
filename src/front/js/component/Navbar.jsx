@@ -47,7 +47,8 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-light bg-light">
             <div className="container">
-              
+                <Link to="/favorite-teams">Favorite Teams</Link>
+                <Link to="/favorite-players">Favorite Players</Link>
 
                 <Link to="/">
                     <img src={nbaLogoTransparentUrl} alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto' }} />
