@@ -18,19 +18,19 @@ export const Home = () => {
 					Bienvenido a la web de estadisticas de la NBA
 				</h1>
 			</div>
-			<div className="container mt-4">
+			<div className="container mt-5">
 				<div className="row justify-content-around">
 					<div className="col-5">
 						<Link to="/TEAMS">
 							<div className="card">
-								<img src={TEAMS} className="card-img-top" alt="Card Image" />
+								<img src={TEAMS} className="card-img-top rounded" alt="Card Image" />
 							</div>
 						</Link>
 					</div>
 					<div className="col-5">
 						<Link to="/STATS">
 							<div className="card">
-								<img src={STATS} className="card-img-top" alt="Card Image" />
+								<img src={STATS} className="card-img-top rounded" alt="Card Image" />
 							</div>
 						</Link>
 					</div>
