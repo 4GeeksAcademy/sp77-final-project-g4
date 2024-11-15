@@ -4,12 +4,15 @@ import { ATL, BOS, BKN, CHA, CHI, CLE, DAL, DEN, DET, GSW, HOU, IND, LAC, LAL, M
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
+import Players from './Players.jsx';
 
 const Teams = () => {
     const { actions, store } = useContext(Context);
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedPlayers, setSelectedPlayers] = useState([]); 
+    const [selectedTeam, setSelectedTeam] = useState(null); 
 
     const backendUrl = process.env.BACKEND_URL;
 
@@ -38,6 +41,16 @@ const Teams = () => {
             isMounted = false;
         };
     }, [backendUrl]);
+
+    const fetchPlayers = async (teamId) => {
+        try {
+            const response = await axios.get(`${backendUrl}api/teams/${teamId}/players`);
+            setSelectedPlayers(response.data.players);
+            setSelectedTeam(teams.find(team => team.id === teamId));
+        } catch (error) {
+            console.error('Error fetching players:', error);
+        }
+    };
 
     if (loading) {
         return <div>Loading teams...</div>;
@@ -71,8 +84,10 @@ const Teams = () => {
 
                     return (
                         <div key={team.id} className="col bg-secondary rounded mx-2">
-                            {LogoComponent && <LogoComponent size={150} />}
-                            <p className="text-white fs-4">{team.full_name}</p>
+                            <div onClick={() => fetchPlayers(team.id)} style={{ cursor: "pointer" }}>
+                                {LogoComponent && <LogoComponent size={150} />}
+                                <p className="text-white fs-4">{team.full_name}</p>
+                            </div>
                             <button
                                 onClick={() => handleAddFavorite(team)}
                                 className="btn btn-outline-light mb-2"
@@ -86,6 +101,12 @@ const Teams = () => {
                     );
                 })}
             </div>
+            {selectedTeam && (
+                <div className="mt-4">
+                    <h2 className="text-white">Players for {selectedTeam.full_name}</h2>
+                    <Players players={selectedPlayers} />
+                </div>
+            )}
         </div>
     );
 };

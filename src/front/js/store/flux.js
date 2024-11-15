@@ -9,8 +9,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             isAuthenticated: false,
             user: null,
             errorMessage: null,
-            favoriteTeams: [], // Favoritos de equipos
-            favoritePlayers: [] // Favoritos de jugadores
+            favoriteTeams: [], // Lista de equipos favoritos
+            favoritePlayers: [], // Lista de jugadores favoritos
+            players: [] // Jugadores de un equipo específico
         },
         actions: {
             exampleFunction: () => {
@@ -48,17 +49,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({
                         isAuthenticated: true,
                         user: data.user,
-                        errorMessage: null,
-                        isAuthenticated: true,
-                        user: data.user,
                         errorMessage: null
                     });
                     console.log("Login exitoso", data);
                 } catch (error) {
                     setStore({
-                        isAuthenticated: false,
-                        user: null,
-                        errorMessage: error.message,
                         isAuthenticated: false,
                         user: null,
                         errorMessage: error.message
@@ -68,9 +63,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             logout: () => {
                 setStore({
-                    isAuthenticated: false,
-                    user: null,
-                    errorMessage: null,
                     isAuthenticated: false,
                     user: null,
                     errorMessage: null
@@ -88,8 +80,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } else {
                     console.log("Este equipo ya está en favoritos.");
                 }
-
-
             },
             toggleFavoriteTeam: (team) => {
                 const store = getStore();
@@ -106,8 +96,48 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
                     console.log("Equipo agregado a favoritos", team);
                 }
+            },
+            fetchPlayersByTeam: async (teamId) => {
+                try {
+                    // Construimos la URL del backend con el ID del equipo
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/teams/${teamId}/players`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error al obtener jugadores: ${response.statusText}`);
+                    }
+            
+                    // Convertimos la respuesta a JSON
+                    const data = await response.json();
+                    
+                    // Guardamos los jugadores obtenidos en el estado global
+                    setStore({ players: data.players });
+                    console.log("Jugadores obtenidos:", data.players);
+                } catch (error) {
+                    // Manejamos y mostramos el error
+                    console.error("Error al obtener jugadores:", error.message);
+                }
+            },
+            addFavoritePlayer: (player) => {
+                const store = getStore();
+                const isFavorite = store.favoritePlayers.some(favPlayer => favPlayer.id === player.id);
+                if (!isFavorite) {
+                    setStore({
+                        favoritePlayers: [...store.favoritePlayers, player]
+                    });
+                    console.log("Jugador agregado a favoritos", player);
+                } else {
+                    console.log("Este jugador ya está en favoritos.");
+                }
+            },
+            removeFavoritePlayer: (player) => {
+                const store = getStore();
+                setStore({
+                    favoritePlayers: store.favoritePlayers.filter(favPlayer => favPlayer.id !== player.id)
+                });
+                console.log("Jugador eliminado de favoritos", player);
             }
-        },
+        }
     };
 };
+
 export default getState;

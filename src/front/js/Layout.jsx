@@ -16,6 +16,7 @@ import FavoriteTeams from "./component/ FavoriteTeams.jsx";
 import ball from '../img/basketball.jpg';
 import background from '../img/background.jpg';
 import { Stats } from "./pages/Stats.jsx";
+import Players from "./component/Players.jsx";
 
 
 
@@ -52,6 +53,7 @@ const Layout = () => {
                         <Route element={<FavoriteTeams />} path="/favorite-teams" />
                         <Route element={<FavoritePlayers />} path="/favorite-players" />
                         <Route element={<h1>Not found!</h1>} path="*" />
+                        <Route element={<Players />} path="/players" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
