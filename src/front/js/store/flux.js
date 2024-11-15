@@ -77,36 +77,36 @@ const getState = ({ getStore, getActions, setStore }) => {
                 });
                 console.log("Logout exitoso");
             },
-            addFavoriteTeam: (team) => {
-                const store = getStore();
-                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
-                if (!isFavorite) {
-                    setStore({
-                        favoriteTeams: [...store.favoriteTeams, team]
-                    });
-                    console.log("Equipo agregado a favoritos", team);
-                } else {
-                    console.log("Este equipo ya está en favoritos.");
-                }
+            // addFavorite: (team) => {
+            //     const store = getStore();
+            //     // Check if the team is already in favorites by full_name
+            //     if (!store.favoriteTeams.some(fav => fav.full_name === team.full_name)) {
+            //         // If not, add it to the favorites
+            //         setStore({ favoriteTeams: [...store.favoriteTeams, team] });
+            //     }
+            // },
+            // removeFavorite: (team) => {
+            //     const store = getStore();
+            //     // Remove the team from favorites by full_name
+            //     setStore({
+            //         favoriteTeams: store.favoriteTeams.filter(fav => fav.full_name !== team.full_name)
+            //     });
+            // },
 
-
+            addFavorite: (newFavorite) => {
+                const duplicate = getStore().favoriteTeams.some((fav) => fav.full_name === newFavorite.full_name);
+                if (duplicate) return;
+            
+                const updatedFavorites = [...getStore().favoriteTeams, newFavorite];
+                setStore({ favoriteTeams: updatedFavorites });
+                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
             },
-            toggleFavoriteTeam: (team) => {
-                const store = getStore();
-                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
-                if (isFavorite) {
-                    // Si ya es favorito, lo eliminamos
-                    setStore({
-                        favoriteTeams: store.favoriteTeams.filter(favTeam => favTeam.id !== team.id)
-                    });
-                    console.log("Equipo eliminado de favoritos", team);
-                } else {
-                    setStore({
-                        favoriteTeams: [...store.favoriteTeams, team]
-                    });
-                    console.log("Equipo agregado a favoritos", team);
-                }
-            }
+            removeFavorite: (item) => {
+                const updatedFavorites = getStore().favoriteTeams.filter(fav => fav.full_name !== item.full_name);
+                setStore({ favoriteTeams: updatedFavorites });
+                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+            },
+            
         },
     };
 };

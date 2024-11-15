@@ -369,6 +369,15 @@ def get_teams():
 if __name__ == '__main__':
     api.run(debug=True)
 
+@api.route('/player_list', methods=['GET'])
+def get_players():
+    players = Players.query.all()  # Obtenemos todos los equipos de la base de datos
+    players_list = [player.serialize() for player in players]  # Serializamos cada equipo en una lista
+    return jsonify(players_list)  # Devolvemos la lista en formato JSON
+
+if __name__ == '__main__':
+    api.run(debug=True)
+
 
 # @api.route('/teams/<int:id>', methods=['GET'])
 # def teams(id):
