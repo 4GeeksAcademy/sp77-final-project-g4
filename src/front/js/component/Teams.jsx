@@ -6,7 +6,7 @@ import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from 'axios';
 import Players from './Players.jsx';
 
-const Teams = () => {
+export const Teams = () => {
     const { actions, store } = useContext(Context);
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const Teams = () => {
             try {
                 const response = await axios.get(`${backendUrl}api/teams_list`);
                 if (isMounted) {
-                    setTeams(response.data.filter(team => team.id !== 31));
+                    setTeams(response.data.filter(team => team.id !== 31)); // Exclude team with id 31
                 }
             } catch (error) {
                 if (isMounted) {
@@ -35,6 +35,7 @@ const Teams = () => {
                 }
             }
         };
+
         fetchTeams();
 
         return () => {
@@ -42,15 +43,6 @@ const Teams = () => {
         };
     }, [backendUrl]);
 
-    const fetchPlayers = async (teamId) => {
-        try {
-            const response = await axios.get(`${backendUrl}api/teams/${teamId}/players`);
-            setSelectedPlayers(response.data.players);
-            setSelectedTeam(teams.find(team => team.id === teamId));
-        } catch (error) {
-            console.error('Error fetching players:', error);
-        }
-    };
 
     if (loading) {
         return <div>Loading teams...</div>;
@@ -68,35 +60,38 @@ const Teams = () => {
         30: WAS,
     };
 
-    const handleAddFavorite = (team) => {
-        actions.addFavoriteTeam(team);
-    };
 
     return (
         <div className="container text-center my-4">
-            <div className="container d-flex justify-content-center">
+            <div className="d-flex justify-content-center">
                 <h1 className="text-center text-white fw-bolder bg-danger p-3 rounded">/TEAMS</h1>
             </div>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 m-2">
                 {teams.map((team) => {
                     const LogoComponent = logoComponents[team.id];
-                    const isFavorite = store.favoriteTeams.some(fav => fav.id === team.id);
 
                     return (
-                        <div key={team.id} className="col bg-secondary rounded mx-2">
-                            <div onClick={() => fetchPlayers(team.id)} style={{ cursor: "pointer" }}>
-                                {LogoComponent && <LogoComponent size={150} />}
+                        <div key={team.id} className="col mb-4">
+                            <div className="card bg-secondary text-center rounded mx-2 p-3">
+                                <div className="d-flex justify-content-center mb-2">
+                                    {LogoComponent && <LogoComponent size={150} />}
+                                </div>
                                 <p className="text-white fs-4">{team.full_name}</p>
+                                <div className="d-flex justify-content-center">
+                                    <button
+                                        className="btn btn-outline-light bg-white me-2 mb-2 text-danger"
+                                        onClick={() => actions.addFavorite(team)}
+                                    >
+                                        <FontAwesomeIcon icon={faHeart} />
+                                    </button>
+                                    <button
+                                        className="btn btn-outline-light mb-2"
+                                        onClick={() => actions.removeFavorite(team)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
+                                </div>
                             </div>
-                            <button
-                                onClick={() => handleAddFavorite(team)}
-                                className="btn btn-outline-light mb-2"
-                            >
-                                <FontAwesomeIcon
-                                    icon={isFavorite ? faTrash : faHeart}
-                                    color={isFavorite ? 'gray' : 'red'}
-                                />
-                            </button>
                         </div>
                     );
                 })}
@@ -110,5 +105,3 @@ const Teams = () => {
         </div>
     );
 };
-
-export default Teams;

@@ -69,75 +69,37 @@ const getState = ({ getStore, getActions, setStore }) => {
                 });
                 console.log("Logout exitoso");
             },
-            addFavoriteTeam: (team) => {
-                const store = getStore();
-                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
-                if (!isFavorite) {
-                    setStore({
-                        favoriteTeams: [...store.favoriteTeams, team]
-                    });
-                    console.log("Equipo agregado a favoritos", team);
-                } else {
-                    console.log("Este equipo ya está en favoritos.");
-                }
-            },
-            toggleFavoriteTeam: (team) => {
-                const store = getStore();
-                const isFavorite = store.favoriteTeams.some(favTeam => favTeam.id === team.id);
-                if (isFavorite) {
-                    // Si ya es favorito, lo eliminamos
-                    setStore({
-                        favoriteTeams: store.favoriteTeams.filter(favTeam => favTeam.id !== team.id)
-                    });
-                    console.log("Equipo eliminado de favoritos", team);
-                } else {
-                    setStore({
-                        favoriteTeams: [...store.favoriteTeams, team]
-                    });
-                    console.log("Equipo agregado a favoritos", team);
-                }
-            },
-            fetchPlayersByTeam: async (teamId) => {
-                try {
-                    // Construimos la URL del backend con el ID del equipo
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/teams/${teamId}/players`);
-                    
-                    if (!response.ok) {
-                        throw new Error(`Error al obtener jugadores: ${response.statusText}`);
-                    }
+            // addFavorite: (team) => {
+            //     const store = getStore();
+            //     // Check if the team is already in favorites by full_name
+            //     if (!store.favoriteTeams.some(fav => fav.full_name === team.full_name)) {
+            //         // If not, add it to the favorites
+            //         setStore({ favoriteTeams: [...store.favoriteTeams, team] });
+            //     }
+            // },
+            // removeFavorite: (team) => {
+            //     const store = getStore();
+            //     // Remove the team from favorites by full_name
+            //     setStore({
+            //         favoriteTeams: store.favoriteTeams.filter(fav => fav.full_name !== team.full_name)
+            //     });
+            // },
+
+            addFavorite: (newFavorite) => {
+                const duplicate = getStore().favoriteTeams.some((fav) => fav.full_name === newFavorite.full_name);
+                if (duplicate) return;
             
-                    // Convertimos la respuesta a JSON
-                    const data = await response.json();
-                    
-                    // Guardamos los jugadores obtenidos en el estado global
-                    setStore({ players: data.players });
-                    console.log("Jugadores obtenidos:", data.players);
-                } catch (error) {
-                    // Manejamos y mostramos el error
-                    console.error("Error al obtener jugadores:", error.message);
-                }
+                const updatedFavorites = [...getStore().favoriteTeams, newFavorite];
+                setStore({ favoriteTeams: updatedFavorites });
+                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
             },
-            addFavoritePlayer: (player) => {
-                const store = getStore();
-                const isFavorite = store.favoritePlayers.some(favPlayer => favPlayer.id === player.id);
-                if (!isFavorite) {
-                    setStore({
-                        favoritePlayers: [...store.favoritePlayers, player]
-                    });
-                    console.log("Jugador agregado a favoritos", player);
-                } else {
-                    console.log("Este jugador ya está en favoritos.");
-                }
+            removeFavorite: (item) => {
+                const updatedFavorites = getStore().favoriteTeams.filter(fav => fav.full_name !== item.full_name);
+                setStore({ favoriteTeams: updatedFavorites });
+                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
             },
-            removeFavoritePlayer: (player) => {
-                const store = getStore();
-                setStore({
-                    favoritePlayers: store.favoritePlayers.filter(favPlayer => favPlayer.id !== player.id)
-                });
-                console.log("Jugador eliminado de favoritos", player);
-            }
-        }
+            
+        },
     };
 };
-
 export default getState;

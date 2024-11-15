@@ -9,7 +9,7 @@ import LoginForm from "./component/LoginForm.jsx";
 import { Home } from "./pages/Home.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
-import Teams from "./component/Teams.jsx";
+import { Teams } from "./component/Teams.jsx";
 import Favorites from "./component/FavoriteTeams.jsx";
 import FavoritePlayers from "./component/FavoritePlayers.jsx";
 import FavoriteTeams from "./component/ FavoriteTeams.jsx";
