@@ -18,7 +18,7 @@ const Favorites = () => {
     return (
         <div className="container text-center my-5">
             <div className="d-flex justify-content-center">
-                <h1 className="text-center text-white fw-bolder bg-danger p-3 rounded">/FAVORITOS</h1>
+                <h1 className="text-center text-white fw-bolder bg-danger p-3 rounded">FAVORITOS</h1>
             </div>
             {store.favoriteTeams.length === 0 ? (
                 <div className="alert alert-warning mt-4" role="alert">

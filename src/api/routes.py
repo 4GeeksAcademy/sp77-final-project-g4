@@ -105,29 +105,7 @@ def players():
     return response_body, 200
 
 
-@api.route('/players/<int:id>', methods=['GET'])
-def character(id):
-    response_body = {}
-    url=f'https://www.swapi.tech/api/people/{id}'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        print(data["result"]["properties"]["height"])
-        print(data["result"]["properties"]["mass"])
-        print(data["result"]["uid"])
-        row = Characters(id=data["result"]["uid"],
-                          name=data["result"]["properties"]["name"],
-                          height=data["result"]["properties"]["height"],
-                          mass=data["result"]["properties"]["mass"],
-                          hair_color=data["result"]["properties"]["hair_color"],
-                          skin_color=data["result"]["properties"]["skin_color"],
-                          eye_color=data["result"]["properties"]["eye_color"],
-                          birth_year=data["result"]["properties"]["birth_year"],
-                          gender=data["result"]["properties"]["gender"])
-        db.session.add(row)
-        db.session.commit()
-        response_body['results'] = data
-    return response_body, 200
+
 
 
 # @api.route('/seasons', methods=['GET'])
@@ -379,29 +357,79 @@ if __name__ == '__main__':
     api.run(debug=True)
 
 
-# @api.route('/teams/<int:id>', methods=['GET'])
-# def teams(id):
-#     response_body = {}
-#     url=f'https://www.swapi.tech/api/people/{id}'
-#     response = requests.get(url)
-#     if response.status_code == 200:
-#         data = response.json()
-#         print(data["result"]["properties"]["height"])
-#         print(data["result"]["properties"]["mass"])
-#         print(data["result"]["uid"])
-#         row = Characters(id=data["result"]["uid"],
-#                           name=data["result"]["properties"]["name"],
-#                           height=data["result"]["properties"]["height"],
-#                           mass=data["result"]["properties"]["mass"],
-#                           hair_color=data["result"]["properties"]["hair_color"],
-#                           skin_color=data["result"]["properties"]["skin_color"],
-#                           eye_color=data["result"]["properties"]["eye_color"],
-#                           birth_year=data["result"]["properties"]["birth_year"],
-#                           gender=data["result"]["properties"]["gender"])
-#         db.session.add(row)
-#         db.session.commit()
-#         response_body['results'] = data
-#     return response_body, 200
+@api.route('/teams/<string:id>', methods=['GET'], endpoint='get_team_players')
+def get_team_players(id):
+    try:
+        # Obtener todas las estadísticas asociadas al team_id
+        stats = Stats.query.filter_by(team_id=id).all()
 
+        # Extraer los jugadores únicos a partir de las relaciones en Stats
+        players = {stat.player_to.api_player_id: stat.player_to for stat in stats}.values()
+
+        # Serializar la lista de jugadores
+        response = [player.serialize() for player in players]
+        
+        return jsonify(response), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api.route('/players/<string:id>', methods=['GET'])
+def get_player_stats(id):
+    try:
+        # Obtener todas las estadísticas de los jugadores con el id proporcionado
+        stats_list = Stats.query.filter_by(player_id=id).all()
+        
+        # Verificar si se encontraron estadísticas para el jugador
+        if not stats_list:
+            return jsonify({"error": f"No stats found for player with ID {id}"}), 404
+        
+        # Formato de los datos de las estadísticas del jugador
+        stats_data = []
+        for stats in stats_list:
+            stats_data.append({
+                "id": stats.id,
+                "games": stats.games,
+                "assists": stats.assists,
+                "points": stats.points,
+                "games_started": stats.games_started,
+                "minutes_pg": stats.minutes_pg,
+                "field_goals": stats.field_goals,
+                "field_attempts": stats.field_attempts,
+                "field_percent": stats.field_percent,
+                "three_fg": stats.three_fg,
+                "three_attempts": stats.three_attempts,
+                "three_percent": stats.three_percent,
+                "two_fg": stats.two_fg,
+                "two_attempts": stats.two_attempts,
+                "two_percent": stats.two_percent,
+                "effect_fg_percent": stats.effect_fg_percent,
+                "ft": stats.ft,
+                "ft_attempts": stats.ft_attempts,
+                "ft_percent": stats.ft_percent,
+                "offensive_rb": stats.offensive_rb,
+                "defensive_rb": stats.defensive_rb,
+                "total_rb": stats.total_rb,
+                "steals": stats.steals,
+                "blocks": stats.blocks,
+                "turnovers": stats.turnovers,
+                "personal_fouls": stats.personal_fouls,
+                "team_id": stats.team_id,
+                "player_id": stats.player_id,
+                "season_id": stats.season_id
+            })
+        
+        return jsonify(stats_data)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+#     
 # PLAYER STATS API http://b8c40s8.143.198.70.30.sslip.io/api/PlayerDataTotals/season/2024
 # TEAMS API https://api.balldontlie.io/v1/teams?Authorization=d51f0c54-d27d-4844-a944-92f1e747c09d
