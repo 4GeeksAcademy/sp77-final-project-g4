@@ -1,18 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom"; // Importar navigate
 import { Context } from "../store/appContext";
 import { ATL, BOS, BKN, CHA, CHI, CLE, DAL, DEN, DET, GSW, HOU, IND, LAC, LAL, MEM, MIA, MIL, MIN, NOP, NYK, OKC, ORL, PHI, PHX, POR, SAC, SAS, TOR, UTA, WAS } from "react-nba-logos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
-import axios from 'axios';
-import Players from './Players.jsx';
+import axios from "axios";
 
 export const Teams = () => {
-    const { actions, store } = useContext(Context);
+    const { actions } = useContext(Context);
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedPlayers, setSelectedPlayers] = useState([]); 
-    const [selectedTeam, setSelectedTeam] = useState(null); 
+    const navigate = useNavigate();
 
     const backendUrl = process.env.BACKEND_URL;
 
@@ -21,9 +20,9 @@ export const Teams = () => {
 
         const fetchTeams = async () => {
             try {
-                const response = await axios.get(`${backendUrl}api/teams_list`);
+                const response = await axios.get(`${backendUrl}/api/teams_list`);
                 if (isMounted) {
-                    setTeams(response.data.filter(team => team.id !== 31)); // Exclude team with id 31
+                    setTeams(response.data.filter(team => team.id !== 31)); // Excluir equipo con id 31
                 }
             } catch (error) {
                 if (isMounted) {
@@ -43,7 +42,6 @@ export const Teams = () => {
         };
     }, [backendUrl]);
 
-
     if (loading) {
         return <div>Loading teams...</div>;
     }
@@ -59,7 +57,6 @@ export const Teams = () => {
         23: PHI, 24: PHX, 25: POR, 26: SAC, 27: SAS, 28: TOR, 29: UTA,
         30: WAS,
     };
-
 
     return (
         <div className="container text-center my-4">
@@ -90,18 +87,18 @@ export const Teams = () => {
                                     >
                                         <FontAwesomeIcon icon={faTrash} />
                                     </button>
+                                    <button
+                                        className="btn btn-outline-light mb-2"
+                                        onClick={() => navigate(`/teams/${team.abbreviation}`)}
+                                    >
+                                        View Players
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     );
                 })}
             </div>
-            {selectedTeam && (
-                <div className="mt-4">
-                    <h2 className="text-white">Players for {selectedTeam.full_name}</h2>
-                    <Players players={selectedPlayers} />
-                </div>
-            )}
         </div>
     );
 };

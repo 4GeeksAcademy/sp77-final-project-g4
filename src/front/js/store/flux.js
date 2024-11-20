@@ -11,12 +11,60 @@ const getState = ({ getStore, getActions, setStore }) => {
             errorMessage: null,
             favoriteTeams: [], // Lista de equipos favoritos
             favoritePlayers: [], // Lista de jugadores favoritos
-            players: [] // Jugadores de un equipo específico
+            players: [] // Lista de jugadores (sin equipo específico)
         },
         actions: {
-            exampleFunction: () => {
-                getActions().changeColor(0, "green");
+            // Obtener todos los jugadores
+            getPlayers: async () => {
+                const uri = `${process.env.BACKEND_URL}/api/player_list`; 
+                try {
+                    const response = await fetch(uri);
+                    const options = { method: 'GET' };
+                    if (!response.ok) {
+                        throw new Error("No se pudieron cargar los jugadores.");
+                    }
+                    const data = await response.json();
+                    setStore({ players: data }); 
+                } catch (error) {
+                    console.log("Error al cargar jugadores:", error.message);
+                }
             },
+
+            // Agregar un jugador a los favoritos
+            addFavoritePlayer: (newFavorite) => {
+                const duplicate = getStore().favoritePlayers.some((fav) => fav.id === newFavorite.id);
+                if (duplicate) return; // Si el jugador ya está en favoritos, no lo agregamos de nuevo
+                
+                const updatedFavorites = [...getStore().favoritePlayers, newFavorite];
+                setStore({ favoritePlayers: updatedFavorites });
+                localStorage.setItem("favoritePlayers", JSON.stringify(updatedFavorites)); // Guardamos en localStorage
+            },
+
+            // Eliminar un jugador de los favoritos
+            removeFavoritePlayer: (player) => {
+                const updatedFavorites = getStore().favoritePlayers.filter(fav => fav.id !== player.id);
+                setStore({ favoritePlayers: updatedFavorites });
+                localStorage.setItem("favoritePlayers", JSON.stringify(updatedFavorites)); // Guardamos en localStorage
+            },
+
+            // Agregar un equipo a los favoritos
+            addFavoriteTeam: (newFavorite) => {
+                const duplicate = getStore().favoriteTeams.some((fav) => fav.id === newFavorite.id);
+                if (duplicate) return; // Si el equipo ya está en favoritos, no lo agregamos de nuevo
+                
+                const updatedFavorites = [...getStore().favoriteTeams, newFavorite];
+                setStore({ favoriteTeams: updatedFavorites });
+                localStorage.setItem("favoriteTeams", JSON.stringify(updatedFavorites)); // Guardamos en localStorage
+            },
+
+            // Eliminar un equipo de los favoritos
+            removeFavoriteTeam: (team) => {
+                const updatedFavorites = getStore().favoriteTeams.filter(fav => fav.id !== team.id);
+                setStore({ favoriteTeams: updatedFavorites });
+                localStorage.setItem("favoriteTeams", JSON.stringify(updatedFavorites)); // Guardamos en localStorage
+            },
+
+            // Función para obtener el mensaje de bienvenida (como ejemplo)
             getMessage: async () => {
                 const uri = `${process.env.BACKEND_URL}/api/hello`;
                 const options = { method: 'GET' };
@@ -29,6 +77,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                 setStore({ message: data.message });
                 return data;
             },
+
+            // Cambiar el color de fondo en el demo (como ejemplo)
             changeColor: (index, color) => {
                 const store = getStore();
                 const demo = store.demo.map((element, i) => {
@@ -37,6 +87,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                 });
                 setStore({ demo: demo });
             },
+
+            // Función de login
             login: async (username, password) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
@@ -61,6 +113,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Error en login:", error.message);
                 }
             },
+
+            // Función de logout
             logout: () => {
                 setStore({
                     isAuthenticated: false,
@@ -69,37 +123,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                 });
                 console.log("Logout exitoso");
             },
-            // addFavorite: (team) => {
-            //     const store = getStore();
-            //     // Check if the team is already in favorites by full_name
-            //     if (!store.favoriteTeams.some(fav => fav.full_name === team.full_name)) {
-            //         // If not, add it to the favorites
-            //         setStore({ favoriteTeams: [...store.favoriteTeams, team] });
-            //     }
-            // },
-            // removeFavorite: (team) => {
-            //     const store = getStore();
-            //     // Remove the team from favorites by full_name
-            //     setStore({
-            //         favoriteTeams: store.favoriteTeams.filter(fav => fav.full_name !== team.full_name)
-            //     });
-            // },
-
-            addFavorite: (newFavorite) => {
-                const duplicate = getStore().favoriteTeams.some((fav) => fav.full_name === newFavorite.full_name);
-                if (duplicate) return;
-            
-                const updatedFavorites = [...getStore().favoriteTeams, newFavorite];
-                setStore({ favoriteTeams: updatedFavorites });
-                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-            },
-            removeFavorite: (item) => {
-                const updatedFavorites = getStore().favoriteTeams.filter(fav => fav.full_name !== item.full_name);
-                setStore({ favoriteTeams: updatedFavorites });
-                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-            },
-            
         },
     };
 };
+
 export default getState;

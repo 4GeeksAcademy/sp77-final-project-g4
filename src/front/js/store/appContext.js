@@ -12,8 +12,7 @@ const injectContext = PassedComponent => {
 				getActions: () => state.actions,
 				setStore: updatedStore =>
 					setState({
-						store: { ...state.store, ...updatedStore },
-						store: { ...state.store, ...updatedStore },
+						store: Object.assign(state.store, updatedStore),
 						actions: { ...state.actions }
 					})
 			})
@@ -23,6 +22,7 @@ const injectContext = PassedComponent => {
     useEffect(() => {
       // Si tienes una acción inicial, llámala aquí.
       // Ejemplo: state.actions.getInitialData();
+	  state.actions.getPlayers()
     }, []);
 
 		return (
