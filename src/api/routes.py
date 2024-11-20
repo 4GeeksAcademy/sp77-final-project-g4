@@ -423,7 +423,7 @@ def get_player_stats(id):
                 "player_id": stats.player_id,
                 "season_id": stats.season_id
             })
-        
+
         # Incluir el nombre del jugador en la respuesta
         response = {
             "playerName": player.playerName,
@@ -435,7 +435,6 @@ def get_player_stats(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
         
-
 if __name__ == '__main__':
     app.run(debug=True)
 #     
