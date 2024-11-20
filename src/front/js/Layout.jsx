@@ -11,7 +11,9 @@ import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import { Teams } from "./component/Teams.jsx";
 import Favorites from "./component/FavoriteTeams.jsx";
+import TeamPlayers from "./component/TeamPlayers.jsx";
 import FavoritePlayers from "./component/FavoritePlayers.jsx";
+import PlayerStats from "./component/PlayerStats.jsx";
 import FavoriteTeams from "./component/ FavoriteTeams.jsx";
 import ball from '../img/basketball.jpg';
 import background from '../img/background.jpg';
@@ -52,6 +54,8 @@ const Layout = () => {
                         <Route element={<FavoriteTeams />} path="/favorite-teams" />
                         <Route element={<FavoritePlayers />} path="/favorite-players" />
                         <Route element={<Teams />} path="/teams" /> 
+                        <Route element={<TeamPlayers />} path="/teams/:id" />
+                        <Route element={<PlayerStats />} path="/players/:id" />
                         <Route element={<LoginForm />} path="/login" /> {/* Cambié el path para no duplicar "/" */}
                         <Route element={<h1>Not found!</h1>} path="*" />
                         <Route element={<Stats />} path="/stats" />

@@ -23,14 +23,14 @@ export const StatsBlocks = () => {
 
     return (
         <div className="container my-5">
-            <h2 className="text-center text-dark mb-4">Blocks</h2>
+            <h2 className="text-center text-dark mb-4">Bloqueos</h2>
 
             <table className="table bg-white table-hover text-center border-danger">
                 <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Jugador</th>
-                        <th scope="col">Asistencias</th>
+                        <th scope="col">Bloqueos</th>
                     </tr>
                 </thead>
                 <tbody>

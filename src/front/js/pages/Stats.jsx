@@ -13,7 +13,7 @@ export const Stats = () => {
     return (
         <div className="">
             <div className="container d-flex justify-content-center">
-                <h1 className="text-center text-white fw-bolder bg-primary p-3 rounded"> /STATS</h1>
+                <h1 className="text-center text-white fw-bolder bg-primary p-3 rounded">STATS</h1>
             </div>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
                 <div className="col">

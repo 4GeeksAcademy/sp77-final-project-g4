@@ -3,6 +3,7 @@ import { Context } from "../store/appContext";
 import { ATL, BOS, BKN, CHA, CHI, CLE, DAL, DEN, DET, GSW, HOU, IND, LAC, LAL, MEM, MIA, MIL, MIN, NOP, NYK, OKC, ORL, PHI, PHX, POR, SAC, SAS, TOR, UTA, WAS } from "react-nba-logos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export const Teams = () => {
@@ -12,7 +13,8 @@ export const Teams = () => {
     const [error, setError] = useState(null);
 
     const backendUrl = process.env.BACKEND_URL;
-
+    const navigate = useNavigate();
+    
     useEffect(() => {
         let isMounted = true;
 
@@ -57,11 +59,24 @@ export const Teams = () => {
         30: WAS,
     };
 
+    const isFavorite = (team) => {
+        return store.favoriteTeams.some(favorite => favorite.id === team.id);
+    };
+
+    const handleFavorites = (favorite) => {
+        console.log(favorite)
+        console.log(store.favoriteTeams)
+        actions.addFavorite(favorite)
+    };
+
+    // useEffect(()=>{
+    //     console.log(store.favoriteTeams)
+    // }, [store.favoriteTeams]);
 
     return (
         <div className="container text-center my-4">
             <div className="d-flex justify-content-center">
-                <h1 className="text-center text-white fw-bolder bg-danger p-3 rounded">/TEAMS</h1>
+                <h1 className="text-center text-white fw-bolder bg-danger p-3 rounded">TEAMS</h1>
             </div>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 m-2">
                 {teams.map((team) => {
@@ -75,18 +90,26 @@ export const Teams = () => {
                                 </div>
                                 <p className="text-white fs-4">{team.full_name}</p>
                                 <div className="d-flex justify-content-center">
-                                    <button
-                                        className="btn btn-outline-light bg-white me-2 mb-2 text-danger"
-                                        onClick={() => actions.addFavorite(team)}
-                                    >
-                                        <FontAwesomeIcon icon={faHeart} />
+                                    <button onClick={() => navigate(`/teams/${team.abbreviation}`)} className="btn btn-primary me-2">
+                                        Jugadores
                                     </button>
-                                    <button
-                                        className="btn btn-outline-light mb-2"
-                                        onClick={() => actions.removeFavorite(team)}
-                                    >
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
+                                    {isFavorite(team) ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-light mb-2"
+                                            onClick={() => actions.removeFavorite(team)}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-light bg-white mb-2 text-danger"
+                                            onClick={() => handleFavorites(team)}
+                                        >
+                                            <FontAwesomeIcon icon={faHeart} />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

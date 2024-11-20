@@ -20,8 +20,8 @@ export const Navbar = () => {
     };
 
     const loginButtonHoverStyle = {
-        backgroundColor: "#0056b3", 
-        transform: "scale(1.05)", 
+        backgroundColor: "#0056b3",
+        transform: "scale(1.05)",
     };
 
     const teamsButtonStyle = {
@@ -45,25 +45,27 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-light bg-light">
+        <nav className="navbar navbar-dark bg-dark mb-4">
             <div className="container">
-                <Link to="/favorite-teams">Favorite Teams</Link>
-                <Link to="/favorite-players">Favorite Players</Link>
-
-                <Link to="/">
-                    <img src={nbaLogoTransparentUrl} alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto' }} />
-                </Link>
+                {/* <Link to="/favorite-teams">Favorite Teams</Link>
+                <Link to="/favorite-players">Favorite Players</Link> */}
+                <div className="d-flex">
+                    <Link to="/" className="me-2">
+                        <img src={nbaLogoTransparentUrl} alt="nbaLogoTransparentUrl" style={{ width: '25px', height: 'auto' }} />
+                    </Link>
+                    <h1 className="text-light fw-bolder">NBA-Stats</h1>
+                </div>
                 <div className="ml-auto">
                     <Link to="/teams">
-                        <button style={teamsButtonStyle}>Teams</button>
+                        <button style={teamsButtonStyle} className="me-2">Teams</button>
                     </Link>
-                    
+
                     <Link to="/favorites">
-                        <button style={teamsButtonStyle}>
+                        <button style={teamsButtonStyle} className="me-2">
                             Favorites {store.favoriteTeams.length > 0 && `(${store.favoriteTeams.length})`}
                         </button>
                     </Link>
-                    
+
                     {/* Botón de Log In */}
                     <button style={loginButtonStyle} onClick={() => setShowLoginForm(!showLoginForm)}>
                         Log In
