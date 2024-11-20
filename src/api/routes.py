@@ -377,10 +377,15 @@ def get_team_players(id):
 @api.route('/players/<string:id>', methods=['GET'])
 def get_player_stats(id):
     try:
-        # Obtener todas las estadísticas de los jugadores con el id proporcionado
+        # Obtener el jugador con el id proporcionado
+        player = Players.query.filter_by(api_player_id=id).first()
+        if not player:
+            return jsonify({"error": f"Player with ID {id} not found"}), 404
+
+        # Obtener todas las estadísticas del jugador
         stats_list = Stats.query.filter_by(player_id=id).all()
         
-        # Verificar si se encontraron estadísticas para el jugador
+        # Verificar si se encontraron estadísticas
         if not stats_list:
             return jsonify({"error": f"No stats found for player with ID {id}"}), 404
         
@@ -418,16 +423,18 @@ def get_player_stats(id):
                 "player_id": stats.player_id,
                 "season_id": stats.season_id
             })
+
+        # Incluir el nombre del jugador en la respuesta
+        response = {
+            "playerName": player.playerName,
+            "stats": stats_data
+        }
         
-        return jsonify(stats_data)
+        return jsonify(response)
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-
-
-
+        
 if __name__ == '__main__':
     app.run(debug=True)
 #     
