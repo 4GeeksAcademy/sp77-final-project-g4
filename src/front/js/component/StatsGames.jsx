@@ -23,14 +23,14 @@ export const StatsGames = () => {
 
     return (
         <div className="container my-5">
-            <h2 className="text-center text-dark mb-4">Games</h2>
+            <h2 className="text-center text-dark mb-4">Partidos</h2>
 
             <table className="table bg-white table-hover text-center border-danger">
                 <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Jugador</th>
-                        <th scope="col">Asistencias</th>
+                        <th scope="col">Partidos</th>
                     </tr>
                 </thead>
                 <tbody>

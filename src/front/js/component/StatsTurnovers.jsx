@@ -23,14 +23,14 @@ export const StatsTurnovers = () => {
 
     return (
         <div className="container my-5">
-            <h2 className="text-center text-dark mb-4">Turnovers</h2>
+            <h2 className="text-center text-dark mb-4">Pérdidas de Balón</h2>
 
             <table className="table bg-white table-hover text-center border-danger">
                 <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Jugador</th>
-                        <th scope="col">Asistencias</th>
+                        <th scope="col">Pérdidas de balón</th>
                     </tr>
                 </thead>
                 <tbody>
